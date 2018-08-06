@@ -6,7 +6,7 @@ CREATE TABLE users (
     email       varchar(400) NOT NULL,
     password   varchar(400) NOT NULL,
     admin        boolean,
-    created_at   timestampz DEFAULT NOW(),
+    created_at   timestamptz DEFAULT NOW(),
 	PRIMARY KEY (user_id)
 );
 
@@ -14,7 +14,7 @@ CREATE TABLE roles (
      role_id uuid DEFAULT uuid_generate_v1(),
      user_id uuid,
 	 role varchar(50) NOT NULL,
-	 created_at timestampz DEFAULT NOW(),
+	 created_at timestamptz DEFAULT NOW(),
 	 PRIMARY KEY (role_id)
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE datapacks (
 	 name varchar(400) NOT NULL,
 	 description text,
 	 data_year integer NOT NULL,
-	 uploaded_at timestampz DEFAULT NOW(),
+	 uploaded_at timestamptz DEFAULT NOW(),
      dir_hash uuid,
 	 size integer,
 	 private boolean,
@@ -37,8 +37,8 @@ CREATE TABLE analysis (
 	 name varchar(400) NOT NULL,
 	 description text,
 	 run_year integer NOT NULL,
-	 created_at timestampz DEFAULT NOW(),
-	 completed_at timestampz,
+	 created_at timestamptz DEFAULT NOW(),
+	 completed_at timestamptz,
 	 input_dir_hash uuid,
      output_dir_hash uuid,
 	 status varchar(20),
