@@ -11,6 +11,10 @@ var fireToolsRouter = require('./routes/firetools');
 
 var app = express();
 
+// Connect to database
+
+const db = require('./db');
+
 
 function checkAuth (req, res, next) {
 	console.log('checkAuth ' + req.url);
