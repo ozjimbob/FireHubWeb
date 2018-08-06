@@ -1,0 +1,17 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+$body-bg: #f00;
+$body-color: #00f;
+
+
+$theme-colors: (
+  "primary": #FFFF00,
+  "danger": #0000FF
+);

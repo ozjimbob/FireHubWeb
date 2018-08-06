@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h2 Login to BRMRH / FireTools
+  if error
+    h2.red= error 
+  form.form-inline(method='post',action='/login')
+  input.form-control.mr-sm-2(type='text',placeholder="email",name='email')
+  input.form-control.mr-sm-2(type='password',name='password')
+  button.btn.my-2.my-sm-2(type='submit') Login
+
