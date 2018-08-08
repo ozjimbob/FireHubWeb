@@ -24,6 +24,9 @@ router.post('/login', async (req,res,next) =>{
 	                	console.log("Logged in");
 	                	req.session.authenticated=true;
                 		req.session.email = req.body.email;
+				req.session.admin = rows[0].admin;
+				req.session.name = rows[0].name;
+				req.session.user_id = rows[0].user_id;
                 		res.redirect('/firetools');
 
 			  } else {
@@ -44,7 +47,13 @@ router.post('/login', async (req,res,next) =>{
 
 router.get("/logout",function(req,res,next){
 	delete req.session.authenticated;
+	delete req.session.email;
+	delete req.session.admin;
+	delete req.session.name;
+	delete req.session.user_id;
 	res.redirect('/');
 });
+
+
 
 module.exports = router;
