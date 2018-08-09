@@ -20,13 +20,17 @@ const db = require('./db');
 
 function checkAuth (req, res, next) {
 	console.log('checkAuth ' + req.url);
-
-	// don't serve /secure to those not logged in
+	myRex =  new RegExp("^\/firetools");
+    // don't serve /secure to those not logged in
 	// you should add to this list, for each and every secure url
-	if (req.url === '/firetools' && (!req.session || !req.session.authenticated)) {
-		res.render('unauthorised', { status: 403 });
-		return;
-	}
+//	if (req.url === '/firetools' && (!req.session || !req.session.authenticated)) {
+//		res.render('unauthorised', { status: 403 });
+//		return;
+//	}
+  if (myRex.test(req.url) &&  (!req.session || !req.session.authenticated)){
+  res.render('unauthorised', { status: 403 });
+  return;
+  }
 
 	next();
 }

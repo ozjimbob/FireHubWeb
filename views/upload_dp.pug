@@ -8,17 +8,22 @@ block content
       .col-lg-10
         p #[em DataPacks] provide the set of GIS datafiles required for a FireTools analysis, and are modelled after the set of fires required to run a traditional ArcGIS based analysis.  Each DataPack should be a .ZIP file containing geodatabases for Assets, Corporate, Fire and Vegetation layers.
         p Please provide details of your DataPack below and select the file to upload.
-        form(method='POST' action = 'post_upload')
-          label(for='name') DataPack Name:
-          input#name.form-control(type='text',name='name')
-          label(for='description') Description:
-          input#description.form-control(type='textarea',rows=5,cols=50,name='description')
-          label(for='data_year') Year of data currency:
-          input#data_year(type='text',name='data_year')
-          label(for='private') Private datapack? (Won't be visible to other users)
-          input#private(type='checkbox',name='private')
-          label(for='file') Upload file:
-          input#file(type='file',name='file')
-
-  
+        form(method='POST', enctype="multipart/form-data",action = 'post_upload')
+          div.form-group
+            label(for='name') DataPack Name:
+            input#name.form-control(type='text',name='name')
+          div.form-group
+            label(for='description') Description:
+            input#description.form-control(type='textarea',rows=5,cols=50,name='description')
+          div.form-group
+            label(for='data_year') Year of data currency:
+            input#data_year(type='text',name='data_year')
+          div.form-group
+            label(for='private') Private datapack? (Won't be visible to other users)
+            input#private(type='checkbox',name='private')
+          div.form-group
+            label(for='file') Upload file:
+            input#file(type='file',name='file')
+          button.btn.btn-primary(type='submit') Submit
+            
 

@@ -18,18 +18,20 @@ CREATE TABLE roles (
 	 PRIMARY KEY (role_id)
 );
 
+
 CREATE TABLE datapacks (
-     datapack_id uuid DEFAULT uuid_generate_v1(),
-     user_id uuid,
-	 name varchar(400) NOT NULL,
-	 description text,
-	 data_year integer NOT NULL,
-	 uploaded_at timestamptz DEFAULT NOW(),
-     dir_hash uuid,
-	 size integer,
-	 private boolean,
-	 PRIMARY KEY (datapack_id)
-);
+       datapack_id uuid,
+       user_id uuid,
+       name varchar(400) NOT NULL,
+       description text,
+       data_year integer NOT NULL,
+       uploaded_at timestampz DEFAULT NOW(),
+       size integer,
+       private boolean,
+       file_path text,
+       PRIMARY KEY (datapack_id)
+   );
+
 
 CREATE TABLE analysis (
      analysis_id uuid DEFAULT uuid_generate_v1(),
