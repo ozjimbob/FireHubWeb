@@ -4,6 +4,8 @@ var router = express.Router();
 var multer = require('multer');
 var db = require("../db");
 var path = require('path');
+var unzip = require('unzip');
+var fs = require('fs');
 
 var storage = multer.diskStorage({
  destination: function(req,file,cb){
@@ -19,7 +21,7 @@ var upload = multer({storage:storage,
     if(ext !== '.zip'){
       req.fileValidationError = "Forbidden extension";
       return cb(null,false,req.fileValidationError);
-  }  
+  }
     cb(null,true);
   }});
 
@@ -57,6 +59,7 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
     res.render('upload_error');
     
   }else{
+  
   var dp_name = req.body['name'];
   var dp_description = req.body['description'];
   var dp_private = Boolean(req.body['private']);
@@ -65,6 +68,12 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
   var dp_filename = req.files.file[0].filename;
   var dp_size = req.files.file[0].size;
   var dp_filepath = req.files.file[0].path;
+  
+  // Extract zip contents to directory, remove zip file
+  fs.renameSync(dp_filepath,dp_filepath + ".zip");
+  fs.createReadStream(dp_filepath + ".zip").pipe(unzip.Extract({ path: dp_filepath }));
+  fs.unlinkSync(dp_filepath + ".zip");
+
 const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',
     [dp_filename,this_user_id,dp_name,dp_description,dp_datayear,dp_size,dp_private,dp_filepath]);
 
