@@ -3,7 +3,7 @@ const uuidv1 = require('uuid/v1');
 var router = express.Router();
 var multer = require('multer');
 var db = require("../db");
-
+var path = require('path');
 
 var storage = multer.diskStorage({
  destination: function(req,file,cb){
@@ -11,14 +11,22 @@ var storage = multer.diskStorage({
 },
  filename: function(req,file,cb){
 	cb(null,uuidv1())}
-});
+  });
 
-var upload = multer({storage:storage});
+var upload = multer({storage:storage,
+  fileFilter: function(req,file,cb){
+    var ext = path.extname(file.originalname);
+    if(ext !== '.zip'){
+      req.fileValidationError = "Forbidden extension";
+      return cb(null,false,req.fileValidationError);
+  }  
+    cb(null,true);
+  }});
+
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log(req.session);
   res.render('firetools', { title: 'FireTools' });
 });
 
@@ -45,7 +53,10 @@ var dpUpload = upload.fields([{name:'name',maxCount:1},
 
 router.post('/post_upload',dpUpload, async (req,res,next) =>{
 	// here we deal with the file
-  
+  if(req.fileValidationError){
+    res.render('upload_error');
+    
+  }else{
   var dp_name = req.body['name'];
   var dp_description = req.body['description'];
   var dp_private = Boolean(req.body['private']);
@@ -54,20 +65,17 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
   var dp_filename = req.files.file[0].filename;
   var dp_size = req.files.file[0].size;
   var dp_filepath = req.files.file[0].path;
-  console.log(dp_private);
 const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',
     [dp_filename,this_user_id,dp_name,dp_description,dp_datayear,dp_size,dp_private,dp_filepath]);
 
 
  res.render('upload_done',{o_filename:dp_filename, o_size:dp_size});
-
+  };
 //  console.log(req.body['file']);
 });
 
 router.get('/list_dp',async (req,res,next) =>{
-  console.log("List packs");
-  const  pack_list = await db.query('select datapacks.*,users.name from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = true order by uploaded_at desc',[req.session.user_id]);
-  console.log(pack_list.rows);
+  const  pack_list = await db.query('select datapacks.*,users.name from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
   res.render('list_dp',{pl: pack_list.rows});
 });
 
