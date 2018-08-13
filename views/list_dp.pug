@@ -1,0 +1,31 @@
+extends layout
+
+
+block content
+  -
+    function FileSize(fileSizeInBytes) {
+    var i = -1;
+    var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+    do {
+    fileSizeInBytes = fileSizeInBytes / 1024;
+    i++;
+    } while (fileSizeInBytes > 1024);
+    return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+    };
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        h2 List of Datapacks
+        each val in pl
+          div.card
+            div.card-body
+              h5.card-title <img src="/images/zip.png" width=64 \> #{val.name}
+              p.card-text= val.description
+              p.card-text <strong>Uploaded by:</strong> #{val.name}
+              p.card-text <strong>Uploded date::</strong> #{val.uploaded_at}
+              p.card-text <strong>Size:</strong> #{FileSize(val.size)}
+              p.card-text <strong>Data year:</strong> #{val.data_year}
+              p.card-text <strong>Private:</strong> #{val.private}
+
