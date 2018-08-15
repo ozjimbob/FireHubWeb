@@ -28,4 +28,12 @@ block content
               p.card-text <strong>Size:</strong> #{FileSize(val.size)}
               p.card-text <strong>Data year:</strong> #{val.data_year}
               p.card-text <strong>Private:</strong> #{val.private}
+              p.card-text <strong>Contents:</strong>
+              - if (val.contents)
+                ul.list-group
+                each geofile in val.contents
+                  li.list-group-item= geofile.FilePath
+                    ul.list-group
+                      each layer in geofile.Layers
+                        li.list-group-item= layer.LayerName
 
