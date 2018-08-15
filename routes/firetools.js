@@ -6,6 +6,7 @@ var db = require("../db");
 var path = require('path');
 var unzip = require('unzip');
 var fs = require('fs');
+var cp = require('child_process');
 
 var storage = multer.diskStorage({
  destination: function(req,file,cb){
@@ -60,25 +61,36 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
     
   }else{
   
-  var dp_name = req.body['name'];
-  var dp_description = req.body['description'];
-  var dp_private = Boolean(req.body['private']);
-  var dp_datayear = req.body['data_year'];
-  var this_user_id =req.session.user_id; 
-  var dp_filename = req.files.file[0].filename;
-  var dp_size = req.files.file[0].size;
-  var dp_filepath = req.files.file[0].path;
-  
+  var sqlpass = []
+
+  sqlpass.dp_name = req.body['name'];
+  sqlpass.dp_description = req.body['description'];
+  sqlpass.dp_private = Boolean(req.body['private']);
+  sqlpass.dp_datayear = req.body['data_year'];
+  sqlpass.this_user_id =req.session.user_id; 
+  sqlpass.dp_filename = req.files.file[0].filename;
+  sqlpass.dp_size = req.files.file[0].size;
+  sqlpass.dp_filepath = req.files.file[0].path;
+
+
   // Extract zip contents to directory, remove zip file
-  fs.renameSync(dp_filepath,dp_filepath + ".zip");
-  fs.createReadStream(dp_filepath + ".zip").pipe(unzip.Extract({ path: dp_filepath }));
-  fs.unlinkSync(dp_filepath + ".zip");
+  fs.renameSync(sqlpass.dp_filepath,sqlpass.dp_filepath + ".zip");
+  fs.createReadStream(sqlpass.dp_filepath + ".zip").pipe(unzip.Extract({ path: sqlpass.dp_filepath }));
+  fs.unlinkSync(sqlpass.dp_filepath + ".zip");
+  
+  res.render('upload_done',{o_filename:sqlpass.dp_filename, o_size:sqlpass.dp_size});
 
-const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',
-    [dp_filename,this_user_id,dp_name,dp_description,dp_datayear,dp_size,dp_private,dp_filepath]);
 
+  cp.exec("./R/parse_ogr.r "+sqlpass.dp_filepath,async (error,stdout,stderr)=> {
+    console.log("Exec");
+console.log(stderr);
+console.log(stdout);
+ var contents = stdout;
+const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path,contents) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
+    [sqlpass.dp_filename,sqlpass.this_user_id,sqlpass.dp_name,sqlpass.dp_description,sqlpass.dp_datayear,sqlpass.dp_size,sqlpass.dp_private,sqlpass.dp_filepath,stdout]);
 
- res.render('upload_done',{o_filename:dp_filename, o_size:dp_size});
+  });
+
   };
 //  console.log(req.body['file']);
 });
