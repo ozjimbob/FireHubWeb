@@ -57,7 +57,7 @@ var dpUpload = upload.fields([{name:'name',maxCount:1},
 router.post('/post_upload',dpUpload, async (req,res,next) =>{
 	// here we deal with the file
   if(req.fileValidationError){
-    res.render('upload_error');
+    res.render('upload_error',{title: 'FireTools'});
     
   }else{
   
@@ -78,7 +78,7 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
   fs.createReadStream(sqlpass.dp_filepath + ".zip").pipe(unzip.Extract({ path: sqlpass.dp_filepath }));
   fs.unlinkSync(sqlpass.dp_filepath + ".zip");
   
-  res.render('upload_done',{o_filename:sqlpass.dp_filename, o_size:sqlpass.dp_size});
+  res.render('upload_done',{o_filename:sqlpass.dp_filename, o_size:sqlpass.dp_size,title:'FireTools'});
 
 
   cp.exec("./R/parse_ogr.r "+sqlpass.dp_filepath,async (error,stdout,stderr)=> {
@@ -97,7 +97,7 @@ const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,d
 
 router.get('/list_dp',async (req,res,next) =>{
   const  pack_list = await db.query('select datapacks.*,users.name from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
-  res.render('list_dp',{pl: pack_list.rows});
+  res.render('list_dp',{pl: pack_list.rows,title:'FireTools'});
 });
 
 module.exports = router;
