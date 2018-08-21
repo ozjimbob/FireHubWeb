@@ -30,7 +30,13 @@ block content
               p.card-text <strong>Private:</strong> #{val.private}
               - if (val.contents)
                 div.container
-                  button.btn.btn-info(data-toggle='collapse',data-target='#'+val.datapack_id) Display Contents
+                  div.row
+                    div.col-sm-6
+                      button.btn.btn-info(data-toggle='collapse',data-target='#'+val.datapack_id) Display Contents
+                    div.col-sm-6
+                      form(action="define_analysis",method="post")
+                        input(type="hidden",name="datapack_id",value=val.datapack_id)
+                        input.btn.btn-success(type="submit",value="Launch Analysis")
                   div.collapse(id=val.datapack_id)
                     ul.list-group
                       each geofile in val.contents
