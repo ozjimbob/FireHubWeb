@@ -8,11 +8,11 @@ block content
         include ft_menu.pug
       .col-lg-10
         p Setting up analysis of datapack: #{pack_data.datapack_id}
-        form(method='POST',action = 'post_upload')
+        form(method='POST',action = 'start_analysis')
           h2 Select Corporate Geodatabase
           div.form-group
             label(for="select_corp_gdb") This database contains the regional or other boundaries that define the extent of the analysis.
-            select.form-control(name="corp_gdb",id="select_corp_gdb",onclick="fillLayers(this,'select_i_vt_boundary')")
+            select.form-control(name="corp_gdb",id="select_corp_gdb",onclick="fillLayers(this,'select_i_vt_boundary','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
             label(for="select_i_vt_boundary") Select the spatial layer in this database that holds the analysis boundary
@@ -24,7 +24,7 @@ block content
           h2 Select Asset Geodatabase
           div.form-group
             label(for="select_asset_gdb") This database contains the polygon layer with fire management zone areas.
-            select.form-control(name="asset_gdb",id="select_asset_gdb",onclick="fillLayers(this,'select_i_vt_fmz')")
+            select.form-control(name="asset_gdb",id="select_asset_gdb",onclick="fillLayers(this,'select_i_vt_fmz','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
             label(for="select_i_vt_fmz") Select layer containing fire mangement zone polygons.
@@ -34,7 +34,7 @@ block content
           h2 Select Fire History Geodatabase
           div.form-group
             label(for="select_fire_gdb") This database contains the fire hsitory polygons, as well as the FMZ and vegetation type look-up tables.
-            select.form-control(name="fire_gdb",id="select_fire_gdb",onclick="fillLayers(this,'select_i_vt_fire_history');fillLayers(this,'select_i_vt_fmz_lut');fillLayers(this,'select_i_vt_veg_lut')")
+            select.form-control(name="fire_gdb",id="select_fire_gdb",onclick="fillLayers(this,'select_i_vt_fire_history','Spatial');fillLayers(this,'select_i_vt_fmz_lut','Table');fillLayers(this,'select_i_vt_veg_lut','Table')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
             label(for="select_i_vt_fire_history") Select layer containing fire history polygons.
@@ -64,7 +64,7 @@ block content
           h2 Select vegetation geodatabase.
           div.form-group
             label(for="select_veg_gdb") This database contains the polygons for vegetation types. 
-            select.form-control(name="veg_gdb",id="select_veg_gdb",onclick="fillLayers(this,'select_i_vt_veg')")
+            select.form-control(name="veg_gdb",id="select_veg_gdb",onclick="fillLayers(this,'select_i_vt_veg','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
             label(for="select_i_vt_veg") Select layers containing the vegetation polygons. You may select multiple layers by holding down <strong>CTRL</strong>.
@@ -77,4 +77,5 @@ block content
             input.form-control(name="ras_res",id="select_ras_res",value="25")
             label(for="select_current_year") Enter year to base time-since-fire analysis from. Defaults to current year.
             input.form-control(name="current_year",id="select_current_year",value=(new Date()).getFullYear())
+          button.btn.btn-primary(type='submit') Start Analysis
 

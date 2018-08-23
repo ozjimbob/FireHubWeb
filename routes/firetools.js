@@ -37,7 +37,6 @@ router.get('/', function(req, res, next) {
 // GET upload datapack (upload_dp) to upload and define new file
 
 router.get('/upload_dp',function(req,res,next){
-        console.log("RENDER UPLAOD");
         res.render('upload_dp',{title: 'FireTools Upload'});
 //	res.render('firetools', { title: 'FireTools' });
 });
@@ -82,9 +81,6 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
 
 
   cp.exec("./R/parse_ogr.r "+sqlpass.dp_filepath,async (error,stdout,stderr)=> {
-    console.log("Exec");
-console.log(stderr);
-console.log(stdout);
  var contents = stdout;
 const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path,contents) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
     [sqlpass.dp_filename,sqlpass.this_user_id,sqlpass.dp_name,sqlpass.dp_description,sqlpass.dp_datayear,sqlpass.dp_size,sqlpass.dp_private,sqlpass.dp_filepath,stdout]);
@@ -107,9 +103,13 @@ router.post('/define_analysis',async (req,res,next) =>{
     res.render('unauth',{title:'FireTools'});
     return;
   };
-  console.log(pack_data);
   res.locals.client_pack = JSON.stringify(pack_data.rows[0]);
   res.render('define_analysis',{title:'FireTools',pack_data:pack_data.rows[0]});
+});
+
+router.post('/start_analysis', async(req,res,next) =>{
+  form = req.body;
+  console.log(req.body);
 });
 
 module.exports = router;
