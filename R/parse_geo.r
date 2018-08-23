@@ -29,26 +29,24 @@ flist = list()
 idx = 1
 
 for(i in geofolders){
-    layer_list = st_layers(i)
-#   print(i)
+    layer_list = vapour_layer_names(i)
   sl = list()
     sl$FilePath = str_replace(i,root,"")
     sl$FileType = "ESRI_Database"
       sl$Layers = list()
-      for(j in 1:length(layer_list$name)){
+      for(j in 1:length(layer_list)){
             sl$Layers[[j]] = list()
  #           print(layer_list$name[j])
-      print(mem_used())
-          sl$Layers[[j]]$LayerName = layer_list$name[j]
+          sl$Layers[[j]]$LayerName = layer_list[j]
               
               FID = vapour_read_names(i,sl$Layers[[j]]$LayerName)[1]
-              rf = vapour_read_attributes(i,sl$Layers[[j]]$LayerName,sql = paste0("select * from ",sl$Layers[[j]]$LayerName," where FID = ",FID,""))
-                  if(is.na(layer_list$geomtype[1])){
+              rf = vapour_read_attributes(i,sl$Layers[[j]]$LayerName,limit_n=1)
+                  if(is.na(vapour_read_extent(i,sl$Layers[[j]])[[1]][1])){
                           type="Table"
                   }else{
                           type="Spatial"
                       }
-
+                  print(rf)
                   sl$Layers[[j]]$Fields = names(rf)
                       sl$Layers[[j]]$Type = type
                     }
