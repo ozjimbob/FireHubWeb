@@ -109,7 +109,17 @@ router.post('/define_analysis',async (req,res,next) =>{
 
 router.post('/start_analysis', async(req,res,next) =>{
   form = req.body;
-  console.log(req.body);
+  for(var key in form){
+    if(form.hasOwnProperty(key)){
+      if(form[key].constructor===Array){
+        var ar = form[key]
+        ar = ar.map(function(item){return "\"" + item + "\""}).join(",")
+        console.log(key + "<-c(" + ar +")")
+      }else{
+        console.log(key + "<-\"" + form[key]+"\"")
+      }
+    }
+  }  
 });
 
 module.exports = router;
