@@ -21,13 +21,15 @@ router.post('/login', async (req,res,next) =>{
 	const hash = rows[0].password;
 	bcrypt.compare(req.body.password, hash, function(errs, resp) {
   			if(resp) {
-	                	console.log("Logged in");
-	                	req.session.authenticated=true;
-                		req.session.email = req.body.email;
-				req.session.admin = rows[0].admin;
-				req.session.name = rows[0].name;
-				req.session.user_id = rows[0].user_id;
-                		res.redirect('/firetools');
+	        console.log("Logged in");
+	        req.session.authenticated=true;
+          req.session.email = req.body.email;
+				  req.session.admin = rows[0].admin;
+				  req.session.name = rows[0].name;
+				  req.session.user_id = rows[0].user_id;
+          console.log(req.session.admin);
+          res.redirect('/firetools');
+
 
 			  } else {
 			   	console.log("Login failed");
