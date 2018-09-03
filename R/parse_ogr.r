@@ -87,7 +87,8 @@ for(i in geopackages){
                                               ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                                   }
               
-              sl$Layers[[j]]$Fields = names(rf)
+               sl$Layers[[j]]$Fields = ifo_fn
+              sl$Layers[[j]]$DataType = ifo_fy
                   sl$Layers[[j]]$Type = type
                 }
         flist[[idx]]=sl
@@ -121,7 +122,8 @@ for(i in shapefiles){
                                               ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                                   }
               
-              sl$Layers[[j]]$Fields = names(rf)
+              sl$Layers[[j]]$Fields = ifo_fn
+              sl$Layers[[j]]$DataType = ifo_fy
                   sl$Layers[[j]]$Type = type
                 }
         flist[[idx]]=sl
