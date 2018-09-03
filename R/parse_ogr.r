@@ -17,6 +17,7 @@ shapefiles = list.files(root,pattern=".shp$",full.names=TRUE,ignore.case=TRUE)
 geopackages = list.files(root,pattern=".gpkg$",full.names=TRUE,ignore.case=TRUE)
 geofolders = list.dirs(root) %>% str_subset(".gdb$")
 
+
 flist = list()
 
 idx = 1
@@ -93,7 +94,7 @@ for(i in geopackages){
           idx=idx+1
 }
 
-for(i in geopackages){
+for(i in shapefiles){
     layer_list = st_layers(i)
   sl = list()
     sl$FilePath = str_replace(i,root,"")

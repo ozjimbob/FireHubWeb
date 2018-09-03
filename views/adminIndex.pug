@@ -1,5 +1,9 @@
 extends layout
 
 block content
-  h2 Welcome to #{title}
-  p Administration Console
+  .container
+    .row
+      .col-lg-2
+        include admin_menu.pug
+      .col-lg-10
+        p You are logged into the Fire Hub Web administration interface. Here you can add and edit users.

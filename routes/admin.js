@@ -5,7 +5,7 @@ var bcrypt = require('bcrypt');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('adminIndex', { title: 'Bushfire Risk Management Web'});
+  res.render('adminIndex', { title: 'Fire Hub Web Administration'});
 });
 
 router.get('/login',function(req,res,next){
