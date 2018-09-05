@@ -19,4 +19,5 @@ coverage
 # Benchmarking
 benchmarks/graphs
 storage
+output
 .httr-oauth
