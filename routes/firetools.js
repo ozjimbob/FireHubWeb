@@ -153,6 +153,7 @@ router.post('/start_analysis', async(req,res,next) =>{
     fs.appendFileSync(config_file,lineout + "\n");
 
   }  
+  fs.appendFileSync(config_file,'rast_temp<-"output"\nsubextent<-NULL\ngazette_gdb<-""\n')
   // Asynchronously launch analysis
   
   // When analysis complete, flag  database, send alert email

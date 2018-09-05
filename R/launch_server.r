@@ -2,6 +2,8 @@
 
 library(analogsea)
 
+
+print("Parsing args")
 # Retrieve command-line arguments
 args = commandArgs(trailingOnly=TRUE)
 
@@ -16,13 +18,15 @@ config_file = args[3]
 
 # Local folder to copy output to
 output_folder = args[4]
-
+print("OAuth")
 # Auth with DigitalOcean
 do_oauth()
 
+print("Starting Connection")
 # Create droplet
 connected=FALSE
 while(connected==FALSE){
+  print("Trying Connection")
   ctest = try({
     d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-6vcpu-16gb",ssh_keys = "geokey",wait = TRUE)
 
@@ -31,16 +35,19 @@ while(connected==FALSE){
 
     # Print IP address
     print(d1$networks$v4[[1]]$ip_address)
-
+    
     Sys.sleep(30)
+    print("Installing FireTools")
 
     # Install FireTools
     droplet_ssh(d1,"git clone https://github.com/ozjimbob/FireTools2R")
-  },silent=TRUE)
+  })
 
   if(class(ctest)=="try-error"){
+    print("No SSH, retrying")
     try(droplet_delete(id),silent=TRUE)
   }else{
+    print("connected")
     connected=TRUE
   }
 
@@ -55,8 +62,12 @@ droplet_upload(d1,"global_config.r","~/config/global_config.r")
 # Launch analysis
 droplet_ssh(d1,"cd FireTools2R; /usr/bin/Rscript run.r")
 
+cat("Press Enter to continue...")
+invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))
+
+
 # Download results
-droplet_download(d1,"outputs/",output_folder,verbose=TRUE)
+droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
 
 #cat("Press Enter to continue...")
 #invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))

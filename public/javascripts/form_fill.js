@@ -15,14 +15,16 @@ function fillLayers(el,target_id,dtype){
 }
 
 function fillFields(el,target_id,parent_id,blank,field_type){
-  var this_idx = el.selectedIndex;
+  var this_value = el.value;
   var parent_idx = document.getElementById(parent_id).selectedIndex;
   var toadd = document.getElementById(target_id);
 
   while(toadd.firstChild){
     toadd.removeChild(toadd.firstChild);
   }
-  var field_list = window.client_pack.contents[parent_idx].Layers[this_idx];
+  var this_idx =  window.client_pack.contents[parent_idx].Layers.findIndex(x => (x.LayerName == this_value));
+  
+  var field_list = window.client_pack.contents[parent_idx].Layers[this_idx]
 
   var out=[];
   
