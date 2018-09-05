@@ -109,17 +109,54 @@ router.post('/define_analysis',async (req,res,next) =>{
 
 router.post('/start_analysis', async(req,res,next) =>{
   form = req.body;
+  // Create database entry
+  var an_uuid = uuidv1();
+  var an_user = req.session.user_id;
+  var an_name = req.body.name;
+  var an_description = req.body.description;
+  var an_pack_id = req.body.pack_id;
+  var an_run_year = req.body.current_year;
+  var an_input_dir_hash = req.body.pack_id;
+  var an_output_dir_hash = an_uuid;
+  var an_status = 'Creating';
+
+
+
+  const {rows} = await db.query('insert into analysis (analysis_id,user_id,name,description,datapack_id,run_year,input_dir_hash,output_dir_hash,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
+       [an_uuid,an_user,an_name,an_description,an_pack_id,an_run_year,an_input_dir_hash, an_output_dir_hash,an_status]);
+
+
+  // Make output directory
+  fs.mkdirSync("output/" + an_uuid);
+   
+  var an_output_dir = "output/" + an_uuid;
+  var config_file = an_output_dir + "/config_linux.r";
+
+  // repair paths
+  req.body.corp_gdb = "../inputs" + req.body.corp_gdb;
+  req.body.fire_gdb = "../inputs" + req.body.fire_gdb;
+  req.body.asset_gdb = "../inputs" + req.body.asset_gdb;
+  req.body.veg_gdb = "../inputs" + req.body.veg_gdb;
+
+
+  // Generate config file (and put in output directory)
   for(var key in form){
     if(form.hasOwnProperty(key)){
       if(form[key].constructor===Array){
         var ar = form[key]
         ar = ar.map(function(item){return "\"" + item + "\""}).join(",")
-        console.log(key + "<-c(" + ar +")")
+        var lineout = key + "<-c(" + ar +")";
       }else{
-        console.log(key + "<-\"" + form[key]+"\"")
+        var lineout = key + "<-\"" + form[key]+"\"";
       }
     }
+    fs.appendFileSync(config_file,lineout + "\n");
+
   }  
+  // Asynchronously launch analysis
+  
+  // When analysis complete, flag  database, send alert email
+
 });
 
 module.exports = router;

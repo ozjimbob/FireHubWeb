@@ -9,6 +9,13 @@ block content
       .col-lg-10
         p Setting up analysis of datapack: #{pack_data.datapack_id}
         form(method='POST',action = 'start_analysis')
+          h2 Define Analysis Information
+          div.form-group
+            label(for="enter_name") Analysis name
+            input.form-control(name="name",id="enter_name")
+            label(for="enter_description") Analysis description
+            textarea.form-control(rows=3,name="description",id="enter_description")
+            input(name="pack_id",type="hidden",value=pack_data.datapack_id)
           h2 Select Corporate Geodatabase
           div.form-group
             label(for="select_corp_gdb") This database contains the regional or other boundaries that define the extent of the analysis.
