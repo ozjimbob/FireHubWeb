@@ -152,11 +152,30 @@ router.post('/start_analysis', async(req,res,next) =>{
     }
     fs.appendFileSync(config_file,lineout + "\n");
 
+
   }  
   fs.appendFileSync(config_file,'rast_temp<-"output"\nsubextent<-NULL\ngazette_gdb<-""\n')
   // Asynchronously launch analysis
-  
+ 
+  var spawn = require('child_process').spawn,
+  run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
+
+  run_an.stdout.on('data', function (data) {
+      console.log('stdout: ' + data.toString());
+  });
+
+  run_an.stderr.on('data', function (data) {
+      console.log('stderr: ' + data.toString());
+  });
+
+  run_an.on('exit', function (code) {
+      console.log('child process exited with code ' + code.toString());
+
+  });
+
   // When analysis complete, flag  database, send alert email
+  res.render('firetools', { title: 'FireTools' });
+
 
 });
 

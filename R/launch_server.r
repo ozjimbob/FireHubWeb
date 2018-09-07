@@ -28,7 +28,7 @@ connected=FALSE
 while(connected==FALSE){
   print("Trying Connection")
   ctest = try({
-    d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-6vcpu-16gb",ssh_keys = "geokey",wait = TRUE)
+    d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-6vcpu-16gb",ssh_keys = "geokey",wait = TRUE,do.wait_time = 5)
 
     # Get ID of droplet
     d1 = droplet(d1$id)
@@ -57,13 +57,10 @@ while(connected==FALSE){
 droplet_upload(d1,input_folder,"~/inputs")
 droplet_ssh(d1,"mkdir config")
 droplet_upload(d1,config_file,"~/config/config_linux.r")
-droplet_upload(d1,"global_config.r","~/config/global_config.r")
+droplet_upload(d1,"R/global_config.r","~/config/global_config.r")
 
 # Launch analysis
 droplet_ssh(d1,"cd FireTools2R; /usr/bin/Rscript run.r")
-
-cat("Press Enter to continue...")
-invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))
 
 
 # Download results
