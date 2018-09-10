@@ -20,7 +20,7 @@ config_file = args[3]
 output_folder = args[4]
 print("OAuth")
 # Auth with DigitalOcean
-do_oauth()
+invisible(do_oauth())
 
 print("Starting Connection")
 # Create droplet
@@ -28,7 +28,7 @@ connected=FALSE
 while(connected==FALSE){
   print("Trying Connection")
   ctest = try({
-    d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-6vcpu-16gb",ssh_keys = "geokey",wait = TRUE,do.wait_time = 5)
+    invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-6vcpu-16gb",ssh_keys = "geokey",wait = TRUE,do.wait_time = 5))
 
     # Get ID of droplet
     d1 = droplet(d1$id)
@@ -54,20 +54,45 @@ while(connected==FALSE){
 }
 
 # Copy files
+print("Uploading Files")
+
 droplet_upload(d1,input_folder,"~/inputs")
 droplet_ssh(d1,"mkdir config")
 droplet_upload(d1,config_file,"~/config/config_linux.r")
 droplet_upload(d1,"R/global_config.r","~/config/global_config.r")
 
+
 # Launch analysis
-droplet_ssh(d1,"cd FireTools2R; /usr/bin/Rscript run.r")
 
+rtest<-try({
+  droplet_ssh(d1,"cd FireTools2R; /usr/bin/Rscript run.r")
+})
 
+if(class(rtest)=="try-error"){
+  print("#!#!#!# Model Execution Failure - Check Logs")
+}
+
+print("Downloading results")
 # Download results
-droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
+dtest <- try({
+  droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
+})
+
+if(class(dtest)=="try-error"){
+  print("#!#!#!# Result download failed")
+}
 
 #cat("Press Enter to continue...")
 #invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))
 
-droplet_delete(d1)
+print("Deleting virtual machine")
+
+dtest <- try({
+  droplet_delete(d1)
+})
+
+if(class(dtest)=="try-error"){
+  print("#!#!#!# Droplet delete failed")
+}
+
 

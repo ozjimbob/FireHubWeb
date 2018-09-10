@@ -8,9 +8,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Bushfire Risk Management Web'});
 });
 
-router.get('/login',function(req,res,next){
+router.get('/login/:msg',function(req,res,next){
   console.log("Get login");
-  res.render('login');
+  res.render('login',{msg:req.params.msg});
 });
 
 router.post('/login', async (req,res,next) =>{
@@ -18,6 +18,10 @@ router.post('/login', async (req,res,next) =>{
 
 	const {rows} = await db.query('select * from users where email = $1',[req.body.email]);
 	console.log("Query performed");
+  if(rows.length == 0){
+       console.log("Login failed - user not found");
+       res.redirect('/login/Login Failed');
+  };
 	const hash = rows[0].password;
 	bcrypt.compare(req.body.password, hash, function(errs, resp) {
   			if(resp) {
@@ -33,7 +37,7 @@ router.post('/login', async (req,res,next) =>{
 
 			  } else {
 			   	console.log("Login failed");
-		                res.render('/login',{error:"Login failed"});
+		      res.redirect('/login/Login Failed');
 			  } 
 		});
 //	if(req.body.email && req.body.email==='test@gmail.com' && req.body.password && req.body.password==='pass'){
