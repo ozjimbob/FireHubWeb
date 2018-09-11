@@ -70,6 +70,9 @@ rtest<-try({
 
 if(class(rtest)=="try-error"){
   print("#!#!#!# Model Execution Failure - Check Logs")
+  droplet_delete(d1)
+  quit("no",status=1)
+
 }
 
 print("Downloading results")
@@ -80,6 +83,8 @@ dtest <- try({
 
 if(class(dtest)=="try-error"){
   print("#!#!#!# Result download failed")
+  droplet_delete(d1)
+  quit("no",status=1)
 }
 
 #cat("Press Enter to continue...")
@@ -93,6 +98,7 @@ dtest <- try({
 
 if(class(dtest)=="try-error"){
   print("#!#!#!# Droplet delete failed")
+  quit("no",status=1)
 }
 
 

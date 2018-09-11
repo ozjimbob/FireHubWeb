@@ -98,7 +98,7 @@ router.get('/list_dp',async (req,res,next) =>{
 
 
 router.get('/list_an',async (req,res,next) =>{
-  const  pack_list = await db.query('select analysis.*,users.name from analysis left join users on analysis.user_id = users.user_id where analysis.user_id = $1 order by created_at desc',[req.session.user_id]);
+  const  pack_list = await db.query('select analysis.* from analysis left join users on analysis.user_id = users.user_id where analysis.user_id = $1 order by created_at desc',[req.session.user_id]);
   res.render('list_an',{pl: pack_list.rows,title:'FireTools Analyses'});
 });
 
@@ -179,7 +179,8 @@ router.post('/start_analysis', async(req,res,next) =>{
     if(code.toString() == "0"){
       console.log("Clean exit")
       const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
-
+      // move map directory
+      fs.renameSync("output/" + an_uuid + "/output/maps","output/" + an_uuid + "/map")
     }else{
       console.log("Error exit")
       const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
@@ -192,7 +193,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   });
 
   // When analysis complete, flag  database, send alert email
-  res.render('firetools', { title: 'FireTools' });
+  res.redirect('list_an');
 
 
 });
