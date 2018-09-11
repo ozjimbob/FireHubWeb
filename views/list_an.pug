@@ -1,0 +1,34 @@
+extends layout
+
+
+block content
+  -
+    function FileSize(fileSizeInBytes) {
+    var i = -1;
+    var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+    do {
+    fileSizeInBytes = fileSizeInBytes / 1024;
+    i++;
+    } while (fileSizeInBytes > 1024);
+    return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+    };
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        h2 List of Analyses
+        each val in pl
+          div.card
+            div.card-body
+              h5.card-title <img src="/images/map.png" width=64 \> #{val.name}
+              p.card-text= val.description
+              p.card-text <strong>Datapack ID:</strong> #{val.datapack_id}
+              p.card-text <strong>Start date:</strong> #{val.created_at}
+              p.card-text <strong>Status:</strong> #{val.status}
+              if (val.status == "Completed")
+                 a.btn.btn-success(role='button',href='/firetools/view_an/'+val.analysis_id) Display Analysis
+              if (val.status == "Creating" || val.status == "In Progress")
+                 a.btn.btn-primary(role='button',href='/firetools/view_an/'+val.analysis_id) View Progress
+              if (val.status == "Error")
+                 a.btn.btn-danger(role='button',href='/firetools/view_an/'+val.analysis_id) View Log

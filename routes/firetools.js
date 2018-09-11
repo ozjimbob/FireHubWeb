@@ -93,8 +93,15 @@ const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,d
 
 router.get('/list_dp',async (req,res,next) =>{
   const  pack_list = await db.query('select datapacks.*,users.name from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
-  res.render('list_dp',{pl: pack_list.rows,title:'FireTools'});
+  res.render('list_dp',{pl: pack_list.rows,title:'FireTools Datapacks'});
 });
+
+
+router.get('/list_an',async (req,res,next) =>{
+  const  pack_list = await db.query('select analysis.*,users.name from analysis left join users on analysis.user_id = users.user_id where analysis.user_id = $1 order by created_at desc',[req.session.user_id]);
+  res.render('list_an',{pl: pack_list.rows,title:'FireTools Analyses'});
+});
+
 
 router.post('/define_analysis',async (req,res,next) =>{
   this_dp = req.body.datapack_id;
@@ -161,7 +168,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
 
   run_an.stdout.on('data', function (data) {
-      console.log('stdout: ' + data.toString());
+      console.log('stdout: ' + an_uuid + data.toString());
   });
 
   run_an.stderr.on('data', function (data) {
@@ -169,7 +176,18 @@ router.post('/start_analysis', async(req,res,next) =>{
   });
 
   run_an.on('exit', function (code) {
-      console.log('child process exited with code ' + code.toString());
+    if(code.toString() == "0"){
+      console.log("Clean exit")
+      const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
+
+    }else{
+      console.log("Error exit")
+      const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
+
+    }
+
+
+    console.log('child process exited with code ' + code.toString());
 
   });
 
