@@ -54,3 +54,28 @@ function getYear(){
   (new Date()).getFullYear()
 };
 
+function fillValues(file,layer,field,target){
+ var toadd = document.getElementById(target);
+  let the_req={file: file,
+           layer: layer,
+           field: field}
+  fetch("/firetools/flistt",{
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(the_req)
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    var ar = data.contents;
+    ar.forEach(function(element){
+      var option = document.createElement("option");
+      option.text = element;
+      option.value = element;
+      toadd.add(option);
+    })
+  }
+      
+      )
+  .catch((err) => console.log(err))
+}
+

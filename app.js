@@ -59,7 +59,7 @@ app.use(function(req,res,next){
     res.locals.session = req.session;
     next();
 });
-app.use(checkAuth);
+//app.use(checkAuth);
 
 // Set up JQuery and Bootstrap
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS

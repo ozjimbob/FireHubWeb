@@ -15,7 +15,7 @@ block content
             input.form-control(name="name",id="enter_name")
             label(for="enter_description") Analysis description
             textarea.form-control(rows=3,name="description",id="enter_description")
-            input(name="pack_id",type="hidden",value=pack_data.datapack_id)
+            input(name="pack_id",id="dpid",type="hidden",value=pack_data.datapack_id)
           h2 Select Corporate Geodatabase
           div.form-group
             label(for="select_corp_gdb") This database contains the regional or other boundaries that define the extent of the analysis.
@@ -25,9 +25,9 @@ block content
             label(for="select_i_vt_boundary") Select the spatial layer in this database that holds the analysis boundary
             select.form-control(name="i_vt_boundary",id="select_i_vt_boundary",onclick="fillFields(this,'select_f_spatial_unit','select_corp_gdb',1,'String')")
             label(for="select_f_spatial_unit") Select the field of this layer containing the names of the spatial units to filter by, or select NONE to use the entire layer.
-            select.form-control(name="f_spatial_unit",id="select_f_spatial_unit")
+            select.form-control(name="f_spatial_unit",id="select_f_spatial_unit",onclick="fillValues(getElementById('dpid').value + getElementById('select_corp_gdb').value,getElementById('select_i_vt_boundary').value, getElementById('select_f_spatial_unit').value,'input_d_spatial_unit')")
             label(for="input_d_spatial_unit") Enter the name of the spatial unit in this field to restrict the analysis to.
-            input.form-control(name="d_spatial_unit",value="",id="input_d_spatial_unit")
+            select.form-control(name="d_spatial_unit",id="input_d_spatial_unit")
           h2 Select Asset Geodatabase
           div.form-group
             label(for="select_asset_gdb") This database contains the polygon layer with fire management zone areas.

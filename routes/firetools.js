@@ -34,6 +34,24 @@ router.get('/', function(req, res, next) {
 });
 
 
+// Handler to retrieve fields list from a geofile
+router.post('/flistt',async(req,res,next) =>{
+
+  var file = "storage/" + req.body.file;
+  var layer = req.body.layer;
+  var field = req.body.field;
+
+  cp.exec('ogrinfo '+file+' -dialect SQLITE -sql "select distinct '+field+' from '+layer+';" | grep '+field+' | cut -d "=" -f2 | sed "s/^[ \t]*//;s/[ \t]*$//"', async (error,stdout,stderr)=> {
+  var str = stdout.split("\n");
+  str = str.slice(1,-1);
+  res.json({"contents": str});
+ });
+
+
+ });
+
+
+
 // GET upload datapack (upload_dp) to upload and define new file
 
 router.get('/upload_dp',function(req,res,next){
