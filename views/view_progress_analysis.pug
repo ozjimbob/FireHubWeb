@@ -1,0 +1,24 @@
+extends layout
+
+
+block content
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        h2 Analysis Output
+        h3 Name: #{analysis_query.name}
+        p Description: #{analysis_query.description}
+        p Analysis id: #{analysis_query.analysis_id}
+        h2 Output Log
+        table.table-striped
+          tbody
+            for val in log.rows
+              tr
+                if val.status == "Log"
+                  td
+                    pre.text-secondary #{val.log_text}
+                if val.status == "Error"
+                  td
+                    pre.text-danger #{val.log_text}

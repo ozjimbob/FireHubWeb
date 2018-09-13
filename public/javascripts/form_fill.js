@@ -67,6 +67,10 @@ function fillValues(file,layer,field,target){
   .then((res) => res.json())
   .then((data) => {
     var ar = data.contents;
+    var option=document.createElement("option");
+    option.text="";
+    option.value = "";
+    toadd.add(option);
     ar.forEach(function(element){
       var option = document.createElement("option");
       option.text = element;

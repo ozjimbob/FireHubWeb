@@ -125,11 +125,33 @@ router.post('/define_analysis',async (req,res,next) =>{
   this_dp = req.body.datapack_id;
   const pack_data = await db.query('select datapacks.* from datapacks where datapack_id = $1 and user_id = $2',[this_dp,req.session.user_id]);
   if(pack_data.rowCount!=1){
-    res.render('unauth',{title:'FireTools'});
+    res.render('unauth',{title:'FireTools',message:'You are unauthorized to define an analysis based on this datapack.'});
     return;
   };
   res.locals.client_pack = JSON.stringify(pack_data.rows[0]);
   res.render('define_analysis',{title:'FireTools',pack_data:pack_data.rows[0]});
+});
+
+router.get('/view_an/:an_uuid',async(req,res,next) => {
+  const analysis_query = await db.query('select * from analysis where analysis_id = $1 and user_id = $2;',[req.params.an_uuid,req.session.user_id]);
+  if(analysis_query.rowCount!=1){
+    res.render('unauth',{title:'FireTools',message:'You are unauthorized to view this analysis.'});
+    return;
+  }
+  var aq = analysis_query.rows[0];
+  const log_query = await db.query('select * from analysis_log where analysis_id = $1 order by log_time asc;',[req.params.an_uuid]);
+
+  if(aq.status == "Completed"){
+    res.render("view_completed_analysis",{analysis_query:aq, log:log_query});
+    return;
+  }
+
+  if(aq.status == "Creating" || aq.status == "In Progress" || aq.status=="Error"){
+    res.render("view_progress_analysis",{analysis_query:aq, log:log_query});
+    return;
+  }
+
+
 });
 
 router.post('/start_analysis', async(req,res,next) =>{
@@ -143,7 +165,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   var an_run_year = req.body.current_year;
   var an_input_dir_hash = req.body.pack_id;
   var an_output_dir_hash = an_uuid;
-  var an_status = 'Creating';
+  var an_status = 'In Progress';
 
 
 
@@ -186,11 +208,20 @@ router.post('/start_analysis', async(req,res,next) =>{
   run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
 
   run_an.stdout.on('data', function (data) {
-      console.log('stdout: ' + an_uuid + data.toString());
+    console.log('stdout: ' + an_uuid + data.toString());
+    if(data.toString().length > 4){ 
+      const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
+       [an_uuid,data.toString(),"Log"]);
+    }
   });
 
   run_an.stderr.on('data', function (data) {
-      console.log('stderr: ' + data.toString());
+    console.log('stderr: ' + data.toString());
+    if(data.toString().length > 4){
+      const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
+       [an_uuid,data.toString(),"Error"]);
+    }
+    
   });
 
   run_an.on('exit', function (code) {
