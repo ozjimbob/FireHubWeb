@@ -9,6 +9,7 @@ function fillLayers(el,target_id,dtype){
         var option = document.createElement("option");
         option.text = element.LayerName;
         option.value = element.LayerName;
+        option.selected = "true";
         toadd.add(option);
       }
   });
@@ -45,6 +46,7 @@ function fillFields(el,target_id,parent_id,blank,field_type){
     var option = document.createElement("option");
     option.text=element;
     option.value =element;
+    option.selected = "true";
     toadd.add(option);
   })
 

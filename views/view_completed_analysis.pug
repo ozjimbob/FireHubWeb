@@ -15,7 +15,11 @@ block content
           li.nav-item
             a.nav-link.active(id="log-tab",data-toggle="tab",href="#log",role="tab",aria-controls="log",aria-selected="true") Log
           li.nav-item
-            a.nav-link(id="output1-tab",data-toggle="tab",href="#output1",role="tab",aria-controls="output1",aria-selected="false") Output 1i
+            a.nav-link(id="output1-tab",data-toggle="tab",href="#output1",role="tab",aria-controls="output1",aria-selected="false") Biodiversity Map
+          li.nav-item
+            a.nav-link(id="output2-tab",data-toggle="tab",href="#output2",role="tab",aria-controls="output2",aria-selected="false") FMZ Map
+          li.nav-item
+            a.nav-link(id="output3-tab",data-toggle="tab",href="#output3",role="tab",aria-controls="output3",aria-selected="false") Combined Map
           li.nav-item
             a.nav-link(id="download-tab",data-toggle="tab",href="#download",role="tab",aria-controls="download",aria-selected="false") Download
         div.tab-content(id="myTabContent")
@@ -31,7 +35,15 @@ block content
                     if val.status == "Error"
                       td
                         pre.text-danger #{val.log_text}
+          
           div.tab-pane.fade(id="output1",role="tabpanel",aria-labelledby="output1-tab")
-            h2 Map output
+            h2 Biodiversity Threshold Map
+            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/heritage.html",width="100%",height="500px")
+          div.tab-pane.fade(id="output2",role="tabpanel",aria-labelledby="output2-tab")
+            h2 FMZ Threshold Map
+            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz.html",width="100%",height="500px")
+          div.tab-pane.fade(id="output3",role="tabpanel",aria-labelledby="output3-tab")
+            h2 Combined Biodiversity/FMZ/SFAZ Map
+            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz_bio.html",width="100%",height="500px")
           div.tab-pane.fade(id="download",role="tabpane;",aria-labelledby="download-tab")
             h2 Download Analysis Output

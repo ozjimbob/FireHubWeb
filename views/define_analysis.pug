@@ -22,10 +22,13 @@ block content
             select.form-control(name="corp_gdb",id="select_corp_gdb",onclick="fillLayers(this,'select_i_vt_boundary','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
             label(for="select_i_vt_boundary") Select the spatial layer in this database that holds the analysis boundary
             select.form-control(name="i_vt_boundary",id="select_i_vt_boundary",onclick="fillFields(this,'select_f_spatial_unit','select_corp_gdb',1,'String')")
+          div.form-group.ml-4
             label(for="select_f_spatial_unit") Select the field of this layer containing the names of the spatial units to filter by, or select NONE to use the entire layer.
             select.form-control(name="f_spatial_unit",id="select_f_spatial_unit",onclick="fillValues(getElementById('dpid').value + getElementById('select_corp_gdb').value,getElementById('select_i_vt_boundary').value, getElementById('select_f_spatial_unit').value,'input_d_spatial_unit')")
+          div.form-group.ml-5
             label(for="input_d_spatial_unit") Enter the name of the spatial unit in this field to restrict the analysis to.
             select.form-control(name="d_spatial_unit",id="input_d_spatial_unit")
           h2 Select Asset Geodatabase
@@ -34,8 +37,10 @@ block content
             select.form-control(name="asset_gdb",id="select_asset_gdb",onclick="fillLayers(this,'select_i_vt_fmz','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
             label(for="select_i_vt_fmz") Select layer containing fire mangement zone polygons.
             select.form-control(name="i_vt_fmz",id="select_i_vt_fmz",onclick="fillFields(this,'select_f_fmz','select_asset_gdb',0,'Numeric')")
+          div.form-group.ml-4
             label(for="select_f_fmz") Select field containing fire management zone code.
             select.form-control(name="f_fmz",id="select_f_fmz")
           h2 Select Fire History Geodatabase
@@ -44,28 +49,40 @@ block content
             select.form-control(name="fire_gdb",id="select_fire_gdb",onclick="fillLayers(this,'select_i_vt_fire_history','Spatial');fillLayers(this,'select_i_vt_fmz_lut','Table');fillLayers(this,'select_i_vt_veg_lut','Table')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
             label(for="select_i_vt_fire_history") Select layer containing fire history polygons.
             select.form-control(name="i_vt_fire_history",id="select_i_vt_fire_history",onclick="fillFields(this,'select_f_fireseason','select_fire_gdb',0,'Numeric')")
+          div.form-group.ml-4
             label(for="select_f_fireseason") Select field contianing fire season date.
             select.form-control(name="f_fireseason",id="select_f_fireseason")
+          div.form-group.ml-3
             label(for="select_i_vt_fmz_lut") Select lookup table containing FMZ codes.
             select.form-control(name="i_vt_fmz_lut",id="select_i_vt_fmz_lut",onclick="fillFields(this,'select_f_vt_fmz','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vt_maxint','select_fire_gdb',0,'Numeric')")
+          div.form-group.ml-4
             label(for="select_f_vt_fmz") Select field containing fire zone field code.
             select.form-control(name="f_vt_fmz",id="select_f_vt_fmz")
+          div.form-group.ml-4
             label(for="select_f_vt_maxint") Select field containing maximum fire interval.
             select.form-control(name="f_vt_maxint",id="select_f_vt_maxint")
+          div.form-group.ml-4
             label(for="input_c_sfaz") Enter code for SFAZ.
             input.form-control(name="c_sfaz",value="6103",id="input_c_sfaz")
+          div.form-group.ml-3
             label(for="select_i_vt_veg_lut") Select lookup table containing vegetation data.
             select.form-control(name="i_vt_veg_lut",id="select_i_vt_veg_lut",onclick="fillFields(this,'select_f_vegid','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmax','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmin','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegadv','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegfireprone','select_fire_gdb',0,'Numeric')")
+          div.form-group.ml-4
             label(for="select_f_vegid") Select field containing vegetation code.
             select.form-control(name="f_vegid",id="select_f_vegid")
+          div.form-group.ml-4
             label(for="select_f_vegmax") Select field containing maximum fire interval.
             select.form-control(name="f_vegmax",id="select_f_vegmax")
+          div.form-group.ml-4
             label(for="select_f_vegmin") Select field containing minimum fire interval.
             select.form-control(name="f_vegmin",id="select_f_vegmin")
+          div.form-group.ml-4
             label(for="select_f_vegadv") Select field containing fire advantage.
             select.form-control(name="f_vegadv",id="select_f_vegadv")
+          div.form-group.ml-4
             label(for="select_f_vegfireprone") Select field containing fire prone status.
             select.form-control(name="f_vegfireprone",id="select_f_vegfireprone")
           h2 Select vegetation geodatabase.
@@ -74,6 +91,7 @@ block content
             select.form-control(name="veg_gdb",id="select_veg_gdb",onclick="fillLayers(this,'select_i_vt_veg','Spatial')")
               each db in pack_data.contents
                 option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-4
             label(for="select_i_vt_veg") Select layers containing the vegetation polygons. You may select multiple layers by holding down <strong>CTRL</strong>.
             select.form-control(name="i_vt_veg",id="select_i_vt_veg",multiple)
           h2 Define project spatial environment

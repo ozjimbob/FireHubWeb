@@ -229,7 +229,7 @@ router.post('/start_analysis', async(req,res,next) =>{
       console.log("Clean exit")
       const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
       // move map directory
-      fs.renameSync("output/" + an_uuid + "/output/maps","output/" + an_uuid + "/map")
+      fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
     }else{
       console.log("Error exit")
       const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);

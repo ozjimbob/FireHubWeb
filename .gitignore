@@ -20,4 +20,5 @@ coverage
 benchmarks/graphs
 storage
 output
+maps
 .httr-oauth
