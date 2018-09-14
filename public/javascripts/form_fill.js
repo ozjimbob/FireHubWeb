@@ -46,7 +46,6 @@ function fillFields(el,target_id,parent_id,blank,field_type){
     var option = document.createElement("option");
     option.text=element;
     option.value =element;
-    option.selected = "true";
     toadd.add(option);
   })
 
@@ -58,6 +57,10 @@ function getYear(){
 
 function fillValues(file,layer,field,target){
  var toadd = document.getElementById(target);
+
+  while (toadd.firstChild) {
+        toadd.removeChild(toadd.firstChild);
+  }
   let the_req={file: file,
            layer: layer,
            field: field}

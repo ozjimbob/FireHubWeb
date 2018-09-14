@@ -5,7 +5,25 @@ var multer = require('multer');
 var db = require("../db");
 var path = require('path');
 var unzip = require('unzip');
+var archiver = require('archiver');
 var fs = require('fs');
+
+// Function for recursive file deletion
+var deleteFolderRecursive = function(path) {
+    if (fs.existsSync(path)) {
+          fs.readdirSync(path).forEach(function(file, index){
+                  var curPath = path + "/" + file;
+                        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                                  deleteFolderRecursive(curPath);
+                                        } else { // delete file
+                                                  fs.unlinkSync(curPath);
+                                                        }
+                            });
+              fs.rmdirSync(path);
+                }
+};
+
+
 var cp = require('child_process');
 
 var storage = multer.diskStorage({
@@ -208,7 +226,6 @@ router.post('/start_analysis', async(req,res,next) =>{
   run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
 
   run_an.stdout.on('data', function (data) {
-    console.log('stdout: ' + an_uuid + data.toString());
     if(data.toString().length > 4){ 
       const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
        [an_uuid,data.toString(),"Log"]);
@@ -216,7 +233,6 @@ router.post('/start_analysis', async(req,res,next) =>{
   });
 
   run_an.stderr.on('data', function (data) {
-    console.log('stderr: ' + data.toString());
     if(data.toString().length > 4){
       const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
        [an_uuid,data.toString(),"Error"]);
@@ -230,6 +246,57 @@ router.post('/start_analysis', async(req,res,next) =>{
       const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
       // move map directory
       fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
+
+      // zip directory for download
+      // zip.folder("output/"+an_uuid,"output/" + an_uuid + ".zip")
+      
+      // define zip output location
+      var output = fs.createWriteStream('output/'+an_uuid+'.zip');
+      var archive = archiver('zip', {
+          zlib: { level: 9 } // Sets the compression level.
+      });
+
+      // listen for all archive data to be written
+      // // 'close' event is fired only when a file descriptor is involved
+      output.on('close', function() {
+         console.log(archive.pointer() + ' total bytes');
+         console.log('archiver has been finalized and the output file descriptor has closed.');
+         deleteFolderRecursive('output/'+an_uuid);
+       });
+
+      // This event is fired when the data source is drained no matter what was the data source.
+      // // It is not part of this library but rather from the NodeJS Stream API.
+      // // @see: https://nodejs.org/api/stream.html#stream_event_end
+      output.on('end', function() {
+         console.log('Data has been drained');
+      });
+      
+      // good practice to catch warnings (ie stat failures and other non-blocking errors)
+      //archive.on('warning', function(err) {
+      //  if (err.code === 'ENOENT') {
+      //   // log warning
+      //      } else {
+         // throw error
+      //  throw err;
+      //  }
+      // });
+       // good practice to catch this error explicitly
+       
+      //archive.on('error', function(err) {
+      //   throw err;
+      //  });
+
+
+      console.log("Creating pipe")
+       archive.pipe(output);
+       // add directory
+      console.log("archiving directory")
+       archive.directory('output/'+an_uuid, false);
+      console.log("finalizing")
+
+       archive.finalize();
+      
+        
     }else{
       console.log("Error exit")
       const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
