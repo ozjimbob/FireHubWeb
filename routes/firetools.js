@@ -314,4 +314,17 @@ router.post('/start_analysis', async(req,res,next) =>{
 
 });
 
+// Download analysis pack zip
+router.get('/dl_analysis/:uuid', async(req, res, next) =>{
+  const dl_query = await db.query('select * from analysis where analysis_id = $1;',[req.params.uuid]);
+  console.log(req.params)
+  console.log(dl_query)
+  if(dl_query.rowCount!=1){
+    res.render('unauth',{title:'FireTools',message:'This analysis pack does not exist.'});
+    return;
+  };
+  res.download('output/' + req.params.uuid + ".zip");
+});
+
+
 module.exports = router;

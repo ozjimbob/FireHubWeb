@@ -15,9 +15,9 @@ block content
           li.nav-item
             a.nav-link.active(id="log-tab",data-toggle="tab",href="#log",role="tab",aria-controls="log",aria-selected="true") Log
           li.nav-item
-            a.nav-link(id="output1-tab",data-toggle="tab",href="#output1",role="tab",aria-controls="output1",aria-selected="false") Biodiversity Map
+            a.nav-link(id="output1-tab",data-toggle="tab",href="#output1",role="tab",aria-controls="output1",aria-selected="false") Heritage Map
           li.nav-item
-            a.nav-link(id="output2-tab",data-toggle="tab",href="#output2",role="tab",aria-controls="output2",aria-selected="false") FMZ Map
+            a.nav-link(id="output2-tab",data-toggle="tab",href="#output2",role="tab",aria-controls="output2",aria-selected="false") FMZ + SFAZ Map
           li.nav-item
             a.nav-link(id="output3-tab",data-toggle="tab",href="#output3",role="tab",aria-controls="output3",aria-selected="false") Combined Map
           li.nav-item
@@ -37,13 +37,16 @@ block content
                         pre.text-danger #{val.log_text}
           
           div.tab-pane.fade(id="output1",role="tabpanel",aria-labelledby="output1-tab")
-            h2 Biodiversity Threshold Map
+            h2 Heritage Threshold Map
             iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/heritage.html",width="100%",height="500px")
           div.tab-pane.fade(id="output2",role="tabpanel",aria-labelledby="output2-tab")
-            h2 FMZ Threshold Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz.html",width="100%",height="500px")
+            h2 FMZ + SFAZ Threshold Map
+            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz.html",width="100%",height="500px")
           div.tab-pane.fade(id="output3",role="tabpanel",aria-labelledby="output3-tab")
-            h2 Combined Biodiversity/FMZ/SFAZ Map
+            h2 Combined Heritage + FMZ + SFAZ Map
             iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz_bio.html",width="100%",height="500px")
           div.tab-pane.fade(id="download",role="tabpane;",aria-labelledby="download-tab")
             h2 Download Analysis Output
+            p Click here to download a ZIP file containing the analysis output layers, including rasters and vector layers.
+            a(href="/firetools/dl_analysis/"+analysis_query.analysis_id) Download Analysis Pack
+
