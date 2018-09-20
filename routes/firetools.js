@@ -28,7 +28,7 @@ var cp = require('child_process');
 
 var storage = multer.diskStorage({
  destination: function(req,file,cb){
-	cb(null,'/home/grant/apps/FireHubWeb/storage')
+	cb(null,__basedir + '/storage')
 },
  filename: function(req,file,cb){
 	cb(null,uuidv1())}
@@ -58,8 +58,12 @@ router.post('/flistt',async(req,res,next) =>{
   var file = "storage/" + req.body.file;
   var layer = req.body.layer;
   var field = req.body.field;
+  
+  // console.log('ogrinfo '+file+' -dialect SQLITE -sql "select distinct '+field+' from '+layer+';" | grep '+field+' | cut -d "=" -f2 | sed "s/^[ \t]*//;s/[ \t]*$//"')
 
-  cp.exec('ogrinfo '+file+' -dialect SQLITE -sql "select distinct '+field+' from '+layer+';" | grep '+field+' | cut -d "=" -f2 | sed "s/^[ \t]*//;s/[ \t]*$//"', async (error,stdout,stderr)=> {
+  cp.exec('ogrinfo '+file+' -sql "select distinct '+field+' from '+layer+'" | grep "'+field+' (String)" | cut -d "=" -f2 | sed "s/^[ \t]*//;s/[ \t]*$//"', async (error,stdout,stderr)=> {
+  console.log(stdout)
+    console.log(stderr)
   var str = stdout.split("\n");
   str = str.slice(1,-1);
   res.json({"contents": str});
@@ -128,7 +132,8 @@ const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,d
 });
 
 router.get('/list_dp',async (req,res,next) =>{
-  const  pack_list = await db.query('select datapacks.*,users.name from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
+  const  pack_list = await db.query('select datapacks.*,users.name as username from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
+  console.log(pack_list);
   res.render('list_dp',{pl: pack_list.rows,title:'FireTools Datapacks'});
 });
 
@@ -226,14 +231,14 @@ router.post('/start_analysis', async(req,res,next) =>{
   run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
 
   run_an.stdout.on('data', function (data) {
-    if(data.toString().length > 4){ 
+    if(data.toString().length > 4 & data.toString().substring(0,2)!="  |"){ 
       const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
        [an_uuid,data.toString(),"Log"]);
     }
   });
 
   run_an.stderr.on('data', function (data) {
-    if(data.toString().length > 4){
+    if(data.toString().length > 4 & data.toString().substring(0,2)!="  |"){
       const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
        [an_uuid,data.toString(),"Error"]);
     }
@@ -270,23 +275,6 @@ router.post('/start_analysis', async(req,res,next) =>{
       output.on('end', function() {
          console.log('Data has been drained');
       });
-      
-      // good practice to catch warnings (ie stat failures and other non-blocking errors)
-      //archive.on('warning', function(err) {
-      //  if (err.code === 'ENOENT') {
-      //   // log warning
-      //      } else {
-         // throw error
-      //  throw err;
-      //  }
-      // });
-       // good practice to catch this error explicitly
-       
-      //archive.on('error', function(err) {
-      //   throw err;
-      //  });
-
-
       console.log("Creating pipe")
        archive.pipe(output);
        // add directory
@@ -317,8 +305,6 @@ router.post('/start_analysis', async(req,res,next) =>{
 // Download analysis pack zip
 router.get('/dl_analysis/:uuid', async(req, res, next) =>{
   const dl_query = await db.query('select * from analysis where analysis_id = $1;',[req.params.uuid]);
-  console.log(req.params)
-  console.log(dl_query)
   if(dl_query.rowCount!=1){
     res.render('unauth',{title:'FireTools',message:'This analysis pack does not exist.'});
     return;

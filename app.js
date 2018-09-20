@@ -14,6 +14,8 @@ var adminRouter = require('./routes/admin');
 
 var app = express();
 
+global.__basedir = __dirname;
+
 // Connect to database
 
 const db = require('./db');
