@@ -65,7 +65,11 @@ router.post('/flistt',async(req,res,next) =>{
   console.log(stdout)
   console.log(stderr)
   var str = stdout.split("\n");
-  str = str.map(function(v){return v.slice(1,-1)});
+  // str = str.map(function(v){return v.slice(1,-1)});
+  //str = str.slice(1,-1);
+  str = str.filter(x => x!="")
+   
+  console.log(str)
   res.json({"contents": str});
  });
 
