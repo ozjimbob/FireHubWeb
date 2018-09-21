@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript
 
 library(analogsea)
-
+httr::set_config(httr::config(http_version = 0))
 
 print("Parsing args")
 # Retrieve command-line arguments
