@@ -63,9 +63,9 @@ router.post('/flistt',async(req,res,next) =>{
 
   cp.exec('ogrinfo '+file+' -sql "select distinct '+field+' from '+layer+'" | grep "'+field+' (String)" | cut -d "=" -f2 | sed "s/^[ \t]*//;s/[ \t]*$//"', async (error,stdout,stderr)=> {
   console.log(stdout)
-    console.log(stderr)
+  console.log(stderr)
   var str = stdout.split("\n");
-  str = str.slice(1,-1);
+  str = str.map(function(v){return v.slice(1,-1)});
   res.json({"contents": str});
  });
 
