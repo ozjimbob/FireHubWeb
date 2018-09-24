@@ -18,6 +18,17 @@ config_file = args[3]
 
 # Local folder to copy output to
 output_folder = args[4]
+
+# PackSize 
+pack_size = as.numeric(args[5])
+if(pack_size > 50000000){
+  isize = "s-8vcpu-32gb"
+}else{
+  isize = "s-6vcpu-16gb"
+}
+
+
+
 print("OAuth")
 # Auth with DigitalOcean
 invisible(do_oauth())
@@ -28,7 +39,7 @@ connected=FALSE
 while(connected==FALSE){
   print("Trying Connection")
   ctest = try({
-    invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size="s-8vcpu-32gb",ssh_keys = "geokey",wait = TRUE,do.wait_time = 5))
+    invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 5))
 
     # Get ID of droplet
     d1 = droplet(d1$id)

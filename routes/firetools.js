@@ -192,6 +192,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   var an_run_year = req.body.current_year;
   var an_input_dir_hash = req.body.pack_id;
   var an_output_dir_hash = an_uuid;
+  var an_size = req.body.an_size;
   var an_status = 'In Progress';
 
 
@@ -232,7 +233,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   // Asynchronously launch analysis
  
   var spawn = require('child_process').spawn,
-  run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid ]);
+  run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid , an_size]);
 
   run_an.stdout.on('data', function (data) {
     if(data.toString().length > 4 & data.toString().substring(0,2)!="  |"){ 
@@ -253,8 +254,12 @@ router.post('/start_analysis', async(req,res,next) =>{
     if(code.toString() == "0"){
       console.log("Clean exit")
       const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
+      
       // move map directory
       fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
+      
+        // move tile directory
+      fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
 
       // zip directory for download
       // zip.folder("output/"+an_uuid,"output/" + an_uuid + ".zip")

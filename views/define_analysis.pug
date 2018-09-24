@@ -16,6 +16,7 @@ block content
             label(for="enter_description") Analysis description
             textarea.form-control(rows=3,name="description",id="enter_description")
             input(name="pack_id",id="dpid",type="hidden",value=pack_data.datapack_id)
+            input(name="an_size",id="an_sizeid",type="hidden",value=pack_data.size)
           h2 Select Corporate Geodatabase
           div.form-group
             label(for="select_corp_gdb") This database contains the regional or other boundaries that define the extent of the analysis.
