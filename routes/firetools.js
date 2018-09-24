@@ -159,6 +159,11 @@ router.post('/define_analysis',async (req,res,next) =>{
   res.render('define_analysis',{title:'FireTools',pack_data:pack_data.rows[0]});
 });
 
+
+
+// View analysis
+
+
 router.get('/view_an/:an_uuid',async(req,res,next) => {
   const analysis_query = await db.query('select * from analysis where analysis_id = $1 and user_id = $2;',[req.params.an_uuid,req.session.user_id]);
   if(analysis_query.rowCount!=1){
@@ -168,13 +173,15 @@ router.get('/view_an/:an_uuid',async(req,res,next) => {
   var aq = analysis_query.rows[0];
   const log_query = await db.query('select * from analysis_log where analysis_id = $1 order by log_time asc;',[req.params.an_uuid]);
 
+  var webroot = req.protocol + '://' + req.get('host') + '/tiles/' + req.params.an_uuid+ '/'
+
   if(aq.status == "Completed"){
-    res.render("view_completed_analysis",{analysis_query:aq, log:log_query});
+    res.render("view_completed_analysis",{analysis_query:aq, log:log_query, webroot:webroot});
     return;
   }
 
   if(aq.status == "Creating" || aq.status == "In Progress" || aq.status=="Error"){
-    res.render("view_progress_analysis",{analysis_query:aq, log:log_query});
+    res.render("view_progress_analysis",{analysis_query:aq, log:log_query, webroot:webroot});
     return;
   }
 
