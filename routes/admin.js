@@ -33,18 +33,9 @@ router.post('/login', async (req,res,next) =>{
 
 			  } else {
 			   	console.log("Login failed");
-		                res.render('/login',{error:"Login failed"});
+		      res.render('/login',{error:"Login failed"});
 			  } 
 		});
-//	if(req.body.email && req.body.email==='test@gmail.com' && req.body.password && req.body.password==='pass'){
-//		console.log("Logged in");
-//		req.session.authenticated=true;
-//		req.session.email = req.body.email;
-//		res.redirect('/firetools');
-//	}else{
-//		console.log("Login failed");
-//		res.render('/login',{error:"Login failed"});
-//	}	
 });
 
 router.get("/logout",function(req,res,next){
@@ -60,6 +51,26 @@ router.get('/add_user',function(req,res,next){
   res.render('add_user',{title: 'FireTools Admin Add User'});
 });
 
+router.post('/do_add_user',async(req,res,next)=>{
+var name = req.body.name;
 
+const user_exists = await db.query('select * from users where email = $1',[email]);
+if(user_exists.rowCount!=1){
+  res.render('unauth',{title:'FireTools',message:'This user email address already exists.'});
+  return;
+}
+
+
+var email = req.body.email;
+var password = req.body.password;
+var admin = Boolean(req.body.admin);
+let hash = bcrypt.hashSync(password, 10);
+
+const {rows} = await db.query('insert into users (name,email,password,admin) VALUES ($1,$2,$3,$4);',
+ [name,email,hash,admin]);
+
+res.render('done_add_user',{title: 'FireTools User Added'});
+
+});
 
 module.exports = router;
