@@ -56,6 +56,10 @@ router.get("/logout",function(req,res,next){
 	res.redirect('/');
 });
 
+router.get('/add_user',function(req,res,next){
+  res.render('add_user',{title: 'FireTools Admin Add User'});
+});
+
 
 
 module.exports = router;

@@ -89,3 +89,15 @@ function fillValues(file,layer,field,target){
   .catch((err) => console.log(err))
 }
 
+
+function check(input) {
+  console.log("checking");
+          if (input.value != document.getElementById('i_pass1').value) {
+            console.log("no match")
+              input.setCustomValidity('Password Must be Matching.');
+         } else {
+         // input is valid -- reset the error message
+        input.setCustomValidity('');
+        console.log("match")
+                }
+        }

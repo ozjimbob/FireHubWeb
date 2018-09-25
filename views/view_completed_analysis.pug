@@ -48,9 +48,20 @@ block content
           div.tab-pane.fade(id="download",role="tabpane;",aria-labelledby="download-tab")
             h2 Download Analysis Output
             p Click here to download a ZIP file containing the analysis output layers, including rasters and vector layers.
-            a(href="/firetools/dl_analysis/"+analysis_query.analysis_id) Download Analysis Pack
-            h2 GIS Service URLs
-            p Enter the following XYZ Tile Layer url in your GIS software to view the layers live.
-            p #{webroot}r_heritage_fmz_sfaz_threshold_status/{z}/{x}/{-y}.png
+            a(href="/firetools/dl_analysis/"+analysis_query.analysis_id) <img src="/images/dl.png" /> Download Analysis Pack
+
+            h3 QGIS XYZ Tile Layer Web Service
+            p Copy and paste the following URLs to add the output map as a XYZ web tile layer service in QGIS.
+            table.table
+              tbody
+                tr
+                  td Heritage/biodiversity threshold status
+                  td #{webroot}r_heritage_threshold_status/{z}/{x}/{-y}.png
+                tr
+                  td FMZ + SFAZ threshold status
+                  td #{webroot}r_fmz_sfaz_threshold_status/{z}/{x}/{-y}.png
+                tr
+                  td Combined threshold status
+                  td #{webroot}r_heritage_fmz_sfaz_threshold_status/{z}/{x}/{-y}.png
 
 
