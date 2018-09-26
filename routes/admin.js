@@ -47,8 +47,18 @@ router.get("/logout",function(req,res,next){
 	res.redirect('/');
 });
 
+// Add user
+
 router.get('/add_user',function(req,res,next){
   res.render('add_user',{title: 'FireTools Admin Add User'});
+});
+
+// List users
+
+router.get('/list_users',async(req,res,next)=>{
+
+  const user_list = await db.query('select * from users order by email asc');
+  res.render('list_users',{title: 'FireTools User List', ul:user_list.rows});
 });
 
 router.post('/do_add_user',async(req,res,next)=>{

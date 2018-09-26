@@ -32,6 +32,7 @@ function checkAuth (req, res, next) {
   // Authenticate admin zone
   myRex = new RegExp("^\/admin");
   if (myRex.test(req.url) && (!req.session || !req.session.authenticated || !req.session.admin)){
+    console.log("Attempting admin access");
     res.render('unauthorised',{status:403});
     return;
   }
@@ -62,7 +63,7 @@ app.use(function(req,res,next){
     res.locals.session = req.session;
     next();
 });
-//app.use(checkAuth);
+app.use(checkAuth);
 
 // Set up JQuery and Bootstrap
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS

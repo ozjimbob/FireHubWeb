@@ -137,7 +137,6 @@ const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,d
 
 router.get('/list_dp',async (req,res,next) =>{
   const  pack_list = await db.query('select datapacks.*,users.name as username from datapacks left join users on datapacks.user_id = users.user_id where datapacks.user_id = $1 or datapacks.private = false order by uploaded_at desc',[req.session.user_id]);
-  console.log(pack_list);
   res.render('list_dp',{pl: pack_list.rows,title:'FireTools Datapacks'});
 });
 

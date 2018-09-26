@@ -1,0 +1,24 @@
+extends layout
+
+
+block content
+  .container
+    .row
+      .col-lg-2
+        include admin_menu.pug 
+      .col-lg-10
+        h2 User List
+        .container
+          table.table-striped.table-sm.table
+            tbody
+              each val in ul
+                tr.d-flex
+                  td.col-lg-6
+                    h4 #{val.name}
+                    p #{val.email}
+                    p Administrator: #{val.admin}
+                    p Created at: #{val.created_at}
+                  td.col-lg-6
+                    a.btn.btn-primary(role='button',href='/admin/edit_user/'+val.user_id) Edit User
+          
+
