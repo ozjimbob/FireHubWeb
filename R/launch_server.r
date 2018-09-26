@@ -48,6 +48,10 @@ while(connected==FALSE){
     print(d1$networks$v4[[1]]$ip_address)
     
     Sys.sleep(30)
+    print("Setting up system monitoring")
+
+    droplet_ssh(d1,"curl -sSL https://agent.digitalocean.com/install.sh | sh")
+
     print("Installing FireTools")
 
     # Install FireTools
