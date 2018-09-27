@@ -7,6 +7,9 @@ var path = require('path');
 var unzip = require('unzip');
 var archiver = require('archiver');
 var fs = require('fs');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 // Function for recursive file deletion
 var deleteFolderRecursive = function(path) {
@@ -200,8 +203,22 @@ router.post('/start_analysis', async(req,res,next) =>{
   var an_output_dir_hash = an_uuid;
   var an_size = req.body.an_size;
   var an_status = 'In Progress';
+  console.log(an_user);
 
+  console.log("send start email")
+  
 
+  var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+ var eml = stemail.rows[0].email;
+ const msg = {
+          to: eml,
+          from: 'test@example.com',
+          subject: 'FireTools Analysis ' + an_name + " launched",
+          text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+          html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
+ };
+      sgMail.send(msg);
+ 
 
   const {rows} = await db.query('insert into analysis (analysis_id,user_id,name,description,datapack_id,run_year,input_dir_hash,output_dir_hash,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
        [an_uuid,an_user,an_name,an_description,an_pack_id,an_run_year,an_input_dir_hash, an_output_dir_hash,an_status]);
@@ -256,7 +273,7 @@ router.post('/start_analysis', async(req,res,next) =>{
     
   });
 
-  run_an.on('exit', function (code) {
+  run_an.on('exit', async (code) =>{
     if(code.toString() == "0"){
       console.log("Clean exit")
       const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
@@ -266,6 +283,17 @@ router.post('/start_analysis', async(req,res,next) =>{
       
         // move tile directory
       fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
+    console.log("Sending email")
+    var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+    var eml = stemail.rows[0].email;
+      const msg = {
+          to: eml,
+          from: 'test@example.com',
+          subject: 'FireTools Analysis ' + an_name + " complete.",
+          text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+          html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
+      sgMail.send(msg);
+    console.log("email sent")
 
       // zip directory for download
       // zip.folder("output/"+an_uuid,"output/" + an_uuid + ".zip")
@@ -298,7 +326,7 @@ router.post('/start_analysis', async(req,res,next) =>{
       console.log("finalizing")
 
        archive.finalize();
-      
+
         
     }else{
       console.log("Error exit")

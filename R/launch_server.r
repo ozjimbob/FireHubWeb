@@ -37,7 +37,25 @@ print("Starting Connection")
 # Create droplet
 connected=FALSE
 while(connected==FALSE){
+  print("Checking for dead instance")
+  anydead = 1
+  while(anydead == 1){
+    dropnames = names(droplets())
+    if(server_name %in% dropnames){
+      print("Existing server for this analysis found - must be orphan. Deleting")
+      id = which(dropnames == server_name)[1]
+      to_delete = droplets()[[id]]
+      if(to_delete$name %in% c("airrater-01","tiles")){next}
+      try({droplet_delete(to_delete)})
+      Sys.sleep(15)
+     }else{
+      print("No dead droplets")
+    anydead = 0
+    }
+  }  
+  
   print("Trying Connection")
+
   ctest = try({
     invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 5))
 
@@ -48,9 +66,10 @@ while(connected==FALSE){
     print(d1$networks$v4[[1]]$ip_address)
     
     Sys.sleep(30)
-    print("Setting up system monitoring")
+ #   print("Setting up system monitoring")
 
-    droplet_ssh(d1,"curl -sSL https://agent.digitalocean.com/install.sh | sh")
+#    droplet_ssh(d1,"curl -sSL https://agent.digitalocean.com/install.sh | sh")
+#    tag_resource(name = "firetools", resource_id = d1$id)
 
     print("Installing FireTools")
 
