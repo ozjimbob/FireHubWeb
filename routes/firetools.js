@@ -378,4 +378,13 @@ router.get('/del_an/:uuid',async(req,res,next)=>{
   
 });
 
+// Delete datapack
+router.get('/del_dp/:uuid',async(req,res,next)=>{
+  // Delete from database
+  const {rows} = db.query("delete from datapacks where datapack_id = $1;",[req.params.uuid]);
+  // Delete output 
+  deleteFolderRecursive('storage/'+req.params.uuid);
+  res.redirect('/firetools/list_dp');
+  
+});
 module.exports = router;

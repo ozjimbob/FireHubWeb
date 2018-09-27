@@ -31,12 +31,14 @@ block content
               - if (val.contents)
                 div.container
                   div.row
-                    div.col-sm-6
+                    div.col-sm-4
                       button.btn.btn-info(data-toggle='collapse',data-target='#'+val.datapack_id) Display Contents
-                    div.col-sm-6
+                    div.col-sm-4
                       form(action="define_analysis",method="post")
                         input(type="hidden",name="datapack_id",value=val.datapack_id)
                         input.btn.btn-success(type="submit",value="Launch Analysis")
+                    div.col-sm-4
+                      button.btn-danger.btn(type="button",data-toggle="modal",data-target="#myModal", data-uuid=val.datapack_id, data-url="/firetools/del_dp/") Delete Datapack
                   div.collapse(id=val.datapack_id)
                     ul.list-group
                       each geofile in val.contents
@@ -44,4 +46,14 @@ block content
                           ul.list-group.list-group-flush
                             each layer in geofile.Layers
                               li.list-group-item= layer.LayerName
+  .modal(tabindex="-1",role="dialog",id="myModal")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          h3.modal-title Delete Datapack?
+        .modal-body
+          p Do you wish to delete this datapack?
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") Close
+          a.btn.btn-primary(id="del_button") Delete
 
