@@ -373,7 +373,7 @@ router.get('/del_an/:uuid',async(req,res,next)=>{
   // Delete output 
   deleteFolderRecursive('maps/'+req.params.uuid);
   deleteFolderRecursive('public/tiles/'+req.params.uuid);
-  if(fs.existsSync('/output/' + req.params.uuid + '.zip')){fs.unlinkSync('/output/' + req.params.uuid + '.zip')};
+  if(fs.existsSync('output/' + req.params.uuid + '.zip')){fs.unlinkSync('output/' + req.params.uuid + '.zip')};
   res.redirect('/firetools/list_an');
   
 });
