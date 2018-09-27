@@ -9,7 +9,7 @@ var archiver = require('archiver');
 var fs = require('fs');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+var from_email = process.env.FROM_EMAIL;
 
 // Function for recursive file deletion
 var deleteFolderRecursive = function(path) {
@@ -212,7 +212,7 @@ router.post('/start_analysis', async(req,res,next) =>{
  var eml = stemail.rows[0].email;
  const msg = {
           to: eml,
-          from: 'test@example.com',
+          from: from_email,
           subject: 'FireTools Analysis ' + an_name + " launched",
           text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
           html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
@@ -288,7 +288,7 @@ router.post('/start_analysis', async(req,res,next) =>{
     var eml = stemail.rows[0].email;
       const msg = {
           to: eml,
-          from: 'test@example.com',
+          from: from_email,
           subject: 'FireTools Analysis ' + an_name + " complete.",
           text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
           html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
@@ -337,7 +337,7 @@ router.post('/start_analysis', async(req,res,next) =>{
     var eml = stemail.rows[0].email;
       const msg = {
           to: eml,
-          from: 'test@example.com',
+          from: from_email,
           subject: 'FireTools Analysis ' + an_name + " ERROR.",
           text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
           html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
