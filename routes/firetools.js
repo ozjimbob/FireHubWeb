@@ -332,6 +332,17 @@ router.post('/start_analysis', async(req,res,next) =>{
       console.log("Error exit")
       const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
 
+    console.log("Sending email")
+    var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+    var eml = stemail.rows[0].email;
+      const msg = {
+          to: eml,
+          from: 'test@example.com',
+          subject: 'FireTools Analysis ' + an_name + " ERROR.",
+          text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+          html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
+      sgMail.send(msg);
+    console.log("email sent")
     }
 
 
