@@ -366,5 +366,16 @@ router.get('/dl_analysis/:uuid', async(req, res, next) =>{
   res.download('output/' + req.params.uuid + ".zip");
 });
 
+// Delete analysis
+router.get('/del_an/:uuid',async(req,res,next)=>{
+  // Delete from database
+  const {rows} = db.query("delete from analysis where analysis_id = $1;",[req.params.uuid]);
+  // Delete output 
+  deleteFolderRecursive('maps/'+req.params.uuid);
+  deleteFolderRecursive('public/tiles/'+req.params.uuid);
+  if(fs.existsSync('/output/' + req.params.uuid + '.zip')){fs.unlinkSync('/output/' + req.params.uuid + '.zip')};
+  res.redirect('/firetools/list_an');
+  
+});
 
 module.exports = router;

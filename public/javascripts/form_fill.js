@@ -106,11 +106,12 @@ jQuery(function($){
 $('#myModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var an_uuid = button.data('uuid') // Extract info from data-* attributes
+    var the_url = button.data('url')
    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     var modal = $(this)
     console.log(an_uuid)
-    modal.find('#del_button').attr("href", "/firetools/del_an/" + an_uuid)
+    modal.find('#del_button').attr("href", the_url + an_uuid)
  })
 })
 

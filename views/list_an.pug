@@ -27,7 +27,7 @@ block content
                       <img src="/images/gear.gif" width-64 \>
               if (val.status == "Error")
                 a.btn.btn-danger(role='button',href='/firetools/view_an/'+val.analysis_id) View Log
-              button.btn-danger.btn(type="button",data-toggle="modal",data-target="#myModal", data-uuid=val.analysis_id) Delete Analysis
+              button.btn-danger.btn(type="button",data-toggle="modal",data-target="#myModal", data-uuid=val.analysis_id, data-url="/firetools/del_an/") Delete Analysis
   .modal(tabindex="-1",role="dialog",id="myModal")
     .modal-dialog(role="document")
       .modal-content
