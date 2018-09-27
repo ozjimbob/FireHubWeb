@@ -22,3 +22,5 @@ storage
 output
 maps
 .httr-oauth
+public/tiles
+
