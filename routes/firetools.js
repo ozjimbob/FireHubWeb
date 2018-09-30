@@ -51,6 +51,7 @@ var upload = multer({storage:storage,
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  console.log("rendering firetools")
   res.render('firetools', { title: 'FireTools' });
 });
 

@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 //var multer = require('multer');
 //var upload = multer({dest:'uploads/'})
 
@@ -23,6 +24,7 @@ const db = require('./db');
 
 function checkAuth (req, res, next) {
 	console.log('checkAuth ' + req.url);
+  console.log(req.session)
 	// Authenticate firetools zone
   myRex =  new RegExp("^\/firetools");
   if (myRex.test(req.url) &&  (!req.session || !req.session.authenticated)){
@@ -47,7 +49,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(session({secret:'poloniUs'}));
+
+var sess_options = {
+    useAsync: true,
+    reapInterval: 5000,
+    maxAge: 10000
+};
+
+
+
+app.use(session({
+  store: new FileStore(sess_options),
+  secret:'P0lonius',
+  resave: false,
+  saveUninitialized: false
+}));
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
