@@ -7,11 +7,10 @@ suppressMessages(require(gdalUtils))
 
 
 #library(vapour)
-
+Sys.sleep(20)
 args = commandArgs(trailingOnly=TRUE)
 root = args[1]
 
-#root = "G:/FireHub/UTAS-20180601T044937Z-001/UTAS/NTHI_APR2018/NTHI_APR2018/NTHI_APR2018"
 
 shapefiles = list.files(root,pattern=".shp$",full.names=TRUE,ignore.case=TRUE)
 geopackages = list.files(root,pattern=".gpkg$",full.names=TRUE,ignore.case=TRUE)
