@@ -2,6 +2,8 @@ extends layout
 
 block content
   script window.client_pack = !{locals.client_pack};
+  script console.log(window.client_pack);
+  script(type="application/javascript",src="/javascripts/def_map.js")
   .container
     .row
       .col-lg-2
@@ -104,4 +106,9 @@ block content
             label(for="select_current_year") Enter year to base time-since-fire analysis from. Defaults to current year.
             input.form-control(name="current_year",id="select_current_year",value=(new Date()).getFullYear())
           button.btn.btn-primary(type='submit') Start Analysis
-
+        .container
+          .row
+            .col-12
+              p Map
+              div(id = "map",style="height:400px;")
+              p End of Map

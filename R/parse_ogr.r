@@ -42,6 +42,7 @@ for(i in geofolders){
                                 }else{
                       type="Spatial"
                       ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                      textent = ifo[7]
                       gk = which(str_detect(ifo,"^Geometry Column"))
                       ifo = ifo[(gk+1):length(ifo)]
                       ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -79,7 +80,8 @@ for(i in geopackages){
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                 }else{
                                         type="Spatial"
-                                  ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        textent = ifo[7]
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -114,7 +116,8 @@ for(i in shapefiles){
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                 }else{
                                         type="Spatial"
-                                  ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        textent=ifo[7]
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
