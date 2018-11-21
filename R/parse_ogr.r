@@ -43,6 +43,8 @@ for(i in geofolders){
                       type="Spatial"
                       ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                       textent = ifo[7]
+                      textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
+
                       gk = which(str_detect(ifo,"^Geometry Column"))
                       ifo = ifo[(gk+1):length(ifo)]
                       ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -52,6 +54,7 @@ for(i in geofolders){
               sl$Layers[[j]]$Fields = ifo_fn
                   sl$Layers[[j]]$DataType = ifo_fy
                   sl$Layers[[j]]$Type = type
+                  sl$Layers[[j]]$Extent = textent
                     }
         flist[[idx]]=sl
           idx=idx+1
@@ -82,6 +85,7 @@ for(i in geopackages){
                                         type="Spatial"
                                         ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                                         textent = ifo[7]
+                                        textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -91,6 +95,7 @@ for(i in geopackages){
                sl$Layers[[j]]$Fields = ifo_fn
               sl$Layers[[j]]$DataType = ifo_fy
                   sl$Layers[[j]]$Type = type
+              sl$Layers[[j]]$Extent = textent
                 }
         flist[[idx]]=sl
           idx=idx+1
@@ -118,6 +123,8 @@ for(i in shapefiles){
                                         type="Spatial"
                                         ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                                         textent=ifo[7]
+                                        textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
+
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -127,6 +134,7 @@ for(i in shapefiles){
               sl$Layers[[j]]$Fields = ifo_fn
               sl$Layers[[j]]$DataType = ifo_fy
                   sl$Layers[[j]]$Type = type
+              sl$Layers[[j]]$Extent = textent
                 }
         flist[[idx]]=sl
           idx=idx+1

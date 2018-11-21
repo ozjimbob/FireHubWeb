@@ -1,0 +1,27 @@
+extends layout
+
+block content
+
+  .container
+    .row
+      .col-lg-2
+        include admin_menu.pug
+      .col-lg-10
+        h2 Add new fire hub user.
+        form.was-validated(method='POST',action = 'do_edit_user',id='identicalForm')
+          div.form-group
+            label(for="i_name") User name:
+            input.form-control(name="name",id="i_name",value=ul.name)
+          div.form-group
+            label(for="i_email") Email address:
+            input.form-control(name="email",id="i_email",value=ul.email)
+          div.form-group
+            p Enter new password to change the existing user password.
+            label(for="i_pass1") Password:
+            input.form-control(name="password",id="i_pass1",type="password")
+            label(for="i_pass2") Reenter Password:
+            input.form-control(name='confirmPassword',id='i_pass2',type="password", oninput="check(this)")
+          div.form-group
+            label(for="i_admin") Admin user: <input class="form-control", type='checkbox', name='admin',id="i_admin" />
+          div.form-group
+            button.btn.btn-primary(type='submit') Edit User

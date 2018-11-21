@@ -53,6 +53,19 @@ router.get('/add_user',function(req,res,next){
   res.render('add_user',{title: 'FireTools Admin Add User'});
 });
 
+
+// Edit user
+
+router.get('/edit_user/:u_uuid',async(req,res,next)=>{
+    console.log(req.params.u_uuid)
+    const user_exists = await db.query('select * from users where user_id = $1',[req.params.u_uuid])
+    if(user_exists.rowCount==0){
+        res.render('unauth',{title:'FireTools',message:'This user does not exist.'});
+        return;
+    }
+    res.render('edit_user',{title: 'FireTools Admin Add User',ul:user_exists.rows[0]});
+});
+
 // List users
 
 router.get('/list_users',async(req,res,next)=>{
