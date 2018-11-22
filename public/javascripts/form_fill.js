@@ -1,3 +1,4 @@
+
 function fillLayers(el,target_id,dtype){
   var idx = el.selectedIndex;
   var toadd = document.getElementById(target_id);
@@ -15,7 +16,8 @@ function fillLayers(el,target_id,dtype){
   });
 }
 
-function fillFields(el,target_id,parent_id,blank,field_type){
+function fillFields(el,target_id,parent_id,blank,field_type,colour){
+  
   var this_value = el.value;
   var parent_idx = document.getElementById(parent_id).selectedIndex;
   var toadd = document.getElementById(target_id);
@@ -25,7 +27,18 @@ function fillFields(el,target_id,parent_id,blank,field_type){
   }
   var this_idx =  window.client_pack.contents[parent_idx].Layers.findIndex(x => (x.LayerName == this_value));
   
-  var field_list = window.client_pack.contents[parent_idx].Layers[this_idx]
+    var field_list = window.client_pack.contents[parent_idx].Layers[this_idx];
+    var ext = window.client_pack.contents[parent_idx].Layers[this_idx].Extent;
+    var ext = [[ext[1],ext[0]],[ext[3],ext[2]]];
+
+    window.rects.forEach(function(rect){if (rect.colour == colour){window.mymap.removeLayer(rect)}})
+
+    myRect = L.rectangle(ext,{color:colour,weight:1}).bindPopup(this_value)
+    console.log(myRect.color)
+    myRect.colour = colour;
+    myRect.addTo(window.mymap);
+    window.rects.push(myRect)
+    window.mymap.fitBounds(ext);
 
   var out=[];
   
@@ -101,6 +114,8 @@ function check(input) {
         console.log("match")
                 }
  }
+
+
 
 jQuery(function($){
 $('#myModal').on('show.bs.modal', function (event) {

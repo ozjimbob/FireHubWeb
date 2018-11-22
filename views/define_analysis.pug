@@ -3,7 +3,6 @@ extends layout
 block content
   script window.client_pack = !{locals.client_pack};
   script console.log(window.client_pack);
-  script(type="application/javascript",src="/javascripts/def_map.js")
   .container
     .row
       .col-lg-2
@@ -15,7 +14,7 @@ block content
           div.form-group
             label(for="enter_name") Analysis name
             input.form-control(name="name",id="enter_name")
-            label(for="enter_description") Analysis description
+            label(for="enter_description") Analysis descriptioniption
             textarea.form-control(rows=3,name="description",id="enter_description")
             input(name="pack_id",id="dpid",type="hidden",value=pack_data.datapack_id)
             input(name="an_size",id="an_sizeid",type="hidden",value=pack_data.size)
@@ -27,7 +26,7 @@ block content
                 option(value=db.FilePath) #{db.FilePath}
           div.form-group.ml-3
             label(for="select_i_vt_boundary") Select the spatial layer in this database that holds the analysis boundary
-            select.form-control(name="i_vt_boundary",id="select_i_vt_boundary",onclick="fillFields(this,'select_f_spatial_unit','select_corp_gdb',1,'String')")
+            select.form-control(name="i_vt_boundary",id="select_i_vt_boundary",onclick="fillFields(this,'select_f_spatial_unit','select_corp_gdb',1,'String','#ff7777')")
           div.form-group.ml-4
             label(for="select_f_spatial_unit") Select the field of this layer containing the names of the spatial units to filter by, or select NONE to use the entire layer.
             select.form-control(name="f_spatial_unit",id="select_f_spatial_unit",onclick="fillValues(getElementById('dpid').value + getElementById('select_corp_gdb').value,getElementById('select_i_vt_boundary').value, getElementById('select_f_spatial_unit').value,'input_d_spatial_unit')")
@@ -42,7 +41,7 @@ block content
                 option(value=db.FilePath) #{db.FilePath}
           div.form-group.ml-3
             label(for="select_i_vt_fmz") Select layer containing fire mangement zone polygons.
-            select.form-control(name="i_vt_fmz",id="select_i_vt_fmz",onclick="fillFields(this,'select_f_fmz','select_asset_gdb',0,'Numeric')")
+            select.form-control(name="i_vt_fmz",id="select_i_vt_fmz",onclick="fillFields(this,'select_f_fmz','select_asset_gdb',0,'Numeric','#66ff66')")
           div.form-group.ml-4
             label(for="select_f_fmz") Select field containing fire management zone code.
             select.form-control(name="f_fmz",id="select_f_fmz")
@@ -54,7 +53,7 @@ block content
                 option(value=db.FilePath) #{db.FilePath}
           div.form-group.ml-3
             label(for="select_i_vt_fire_history") Select layer containing fire history polygons.
-            select.form-control(name="i_vt_fire_history",id="select_i_vt_fire_history",onclick="fillFields(this,'select_f_fireseason','select_fire_gdb',0,'Numeric')")
+            select.form-control(name="i_vt_fire_history",id="select_i_vt_fire_history",onclick="fillFields(this,'select_f_fireseason','select_fire_gdb',0,'Numeric','#6666ff')")
           div.form-group.ml-4
             label(for="select_f_fireseason") Select field contianing fire season date.
             select.form-control(name="f_fireseason",id="select_f_fireseason")
@@ -112,3 +111,5 @@ block content
               p Map
               div(id = "map",style="height:400px;")
               p End of Map
+
+  script(type="application/javascript",src="/javascripts/def_map.js")
