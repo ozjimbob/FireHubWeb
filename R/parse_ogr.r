@@ -43,7 +43,7 @@ for(i in geofolders){
                       type="Spatial"
                       ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                       textent = ifo[7]
-                      textent = as.numeric()strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
+                      textent = as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
 
                       gk = which(str_detect(ifo,"^Geometry Column"))
                       ifo = ifo[(gk+1):length(ifo)]
@@ -139,6 +139,5 @@ for(i in shapefiles){
         flist[[idx]]=sl
           idx=idx+1
 }
-
 cat(toJSON(flist))
 
