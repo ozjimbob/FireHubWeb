@@ -46,6 +46,48 @@ router.post('/login', async (req,res,next) =>{
 //	}	
 });
 
+// View/edit account
+
+router.get('/account',async(req,res,next)=>{
+    user_id = req.session.user_id
+    const user_exists = await db.query('select * from users where user_id = $1',[user_id])
+    if(user_exists.rowCount==0){
+        res.render('unauth',{title:'FireTools',message:'This user does not exist.'});
+        return;
+    }
+    res.render('edit_account',{title: 'FireTools Admin Add User',ul:user_exists.rows[0]});
+});
+
+// Save account edits
+
+router.post('/do_edit_account',async(req,res,next)=>{
+    var name = req.body.name;
+    var user_id = req.session.user_id;
+    var email = req.body.email;
+    console.log(email)
+    const user_exists = await db.query('select * from users where email = $1 and user_id <> $2',[email,user_id]);
+    console.log(user_exists)
+    console.log(user_exists.rowCount)
+    if(user_exists.rowCount!=0){
+        res.render('unauth',{title:'FireTools',message:'This user email address already exists.'});
+        return;
+    }
+
+    var password = req.body.password;
+    let hash = bcrypt.hashSync(password, 10);
+
+    if(password == ""){
+        console.log("Edit: No password change")
+        const {rows} = await db.query('update users set (name,email) = ($1,$2) where user_id = $3',[name,email,user_id])
+    }else{
+        console.log("Edit: Password change")
+        const {rows} = await db.query('update users set (name,email,password) = ($1,$2,$3) where user_id = $4',[name,email,hash,user_id])
+    }
+    res.render('done_edit_user',{title: 'FireTools User Edited'});
+
+});
+
+
 router.get("/logout",function(req,res,next){
 	delete req.session.authenticated;
 	delete req.session.email;

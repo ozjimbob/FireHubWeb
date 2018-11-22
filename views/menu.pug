@@ -11,7 +11,7 @@ nav.navbar.justify-content-between
       li.nav-item
         a.nav-link(href='/admin') Admin
   if session.authenticated
-    p Logged in as #{session.email} <a href="/logout">Logout</a>
+    p Logged in as #{session.email} | <a href="/account">Account</a> | <a href="/logout">Logout</a>
   if !session.authenticated
     form.form-inline(method='post',action='/login')
       input.form-control.mr-sm-2(type='text',placeholder="email",name='email')
