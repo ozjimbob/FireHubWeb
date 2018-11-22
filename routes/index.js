@@ -9,22 +9,17 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login/:msg',function(req,res,next){
-  console.log("Get login");
   res.render('login',{msg:req.params.msg});
 });
 
 router.post('/login', async (req,res,next) =>{
-	console.log("Login received");
 
 	const {rows} = await db.query('select * from users where email = $1',[req.body.email]);
-	console.log("Query performed");
   if(rows.length == 0){
-       console.log("Login failed - user not found");
        res.redirect('/login/Login Failed');
   };
 	const hash = rows[0].password;
 	bcrypt.compare(req.body.password, hash, function(errs, resp) {
-    console.log(resp);
   			if(resp) {
 	        console.log("Logged in");
 	        req.session.authenticated=true;
@@ -37,7 +32,6 @@ router.post('/login', async (req,res,next) =>{
 
 
 			  } else {
-			   	console.log("Login failed");
 		      res.redirect('/login/Login Failed');
 			  } 
 		});

@@ -8,10 +8,11 @@ block content
         include admin_menu.pug
       .col-lg-10
         h2 Add new fire hub user.
-        form.was-validated(method='POST',action = 'do_edit_user',id='identicalForm')
+        form.was-validated(method='POST',action = '../do_edit_user',id='identicalForm')
           div.form-group
             label(for="i_name") User name:
             input.form-control(name="name",id="i_name",value=ul.name)
+            input(name="user_id",id="user_id",type="hidden",value=ul.user_id)
           div.form-group
             label(for="i_email") Email address:
             input.form-control(name="email",id="i_email",value=ul.email)
@@ -22,6 +23,9 @@ block content
             label(for="i_pass2") Reenter Password:
             input.form-control(name='confirmPassword',id='i_pass2',type="password", oninput="check(this)")
           div.form-group
-            label(for="i_admin") Admin user: <input class="form-control", type='checkbox', name='admin',id="i_admin" />
+            - if (ul.admin)
+              label(for="i_admin") Admin user: <input class="form-control" type='checkbox' name='admin' id="i_admin" checked />
+            - else
+              label(for="i_admin") Admin user: <input class="form-control" type='checkbox' name='admin' id="i_admin"  />
           div.form-group
             button.btn.btn-primary(type='submit') Edit User

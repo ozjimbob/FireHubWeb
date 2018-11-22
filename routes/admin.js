@@ -74,25 +74,58 @@ router.get('/list_users',async(req,res,next)=>{
   res.render('list_users',{title: 'FireTools User List', ul:user_list.rows});
 });
 
+// Do Add User
+
 router.post('/do_add_user',async(req,res,next)=>{
 var name = req.body.name;
 
+    var email = req.body.email;
 const user_exists = await db.query('select * from users where email = $1',[email]);
-if(user_exists.rowCount!=1){
+if(user_exists.rowCount!=0){
   res.render('unauth',{title:'FireTools',message:'This user email address already exists.'});
   return;
 }
 
 
-var email = req.body.email;
 var password = req.body.password;
 var admin = Boolean(req.body.admin);
 let hash = bcrypt.hashSync(password, 10);
 
 const {rows} = await db.query('insert into users (name,email,password,admin) VALUES ($1,$2,$3,$4);',
- [name,email,hash,admin]);
+ [name,email,hash,admin]);  
 
 res.render('done_add_user',{title: 'FireTools User Added'});
+
+});
+
+
+// Do Edit User
+
+router.post('/do_edit_user',async(req,res,next)=>{
+    var name = req.body.name;
+    var user_id = req.body.user_id;
+    var email = req.body.email;
+    console.log(email)
+    const user_exists = await db.query('select * from users where email = $1 and user_id <> $2',[email,user_id]);
+    console.log(user_exists)
+    console.log(user_exists.rowCount)
+    if(user_exists.rowCount!=0){
+        res.render('unauth',{title:'FireTools',message:'This user email address already exists.'});
+        return;
+    }
+
+    var password = req.body.password;
+    var admin = Boolean(req.body.admin);
+    let hash = bcrypt.hashSync(password, 10);
+
+    if(password == ""){
+        console.log("Edit: No password change")
+        const {rows} = await db.query('update users set (name,email,admin) = ($1,$2,$3) where user_id = $4',[name,email,admin,user_id])
+    }else{
+        console.log("Edit: Password change")
+        const {rows} = await db.query('update users set (name,email,admin,password) = ($1,$2,$3,$4) where user_id = $5',[name,email,admin,hash,user_id])
+    }
+    res.render('done_edit_user',{title: 'FireTools User Edited'});
 
 });
 

@@ -23,8 +23,6 @@ const db = require('./db');
 
 
 function checkAuth (req, res, next) {
-	console.log('checkAuth ' + req.url);
-  console.log(req.session)
 	// Authenticate firetools zone
   myRex =  new RegExp("^\/firetools");
   if (myRex.test(req.url) &&  (!req.session || !req.session.authenticated)){
@@ -34,7 +32,6 @@ function checkAuth (req, res, next) {
   // Authenticate admin zone
   myRex = new RegExp("^\/admin");
   if (myRex.test(req.url) && (!req.session || !req.session.authenticated || !req.session.admin)){
-    console.log("Attempting admin access");
     res.render('unauthorised',{status:403});
     return;
   }
