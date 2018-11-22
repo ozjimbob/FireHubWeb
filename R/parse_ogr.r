@@ -43,7 +43,7 @@ for(i in geofolders){
                       type="Spatial"
                       ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                       textent = ifo[7]
-                      textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
+                      textent = as.numeric()strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
 
                       gk = which(str_detect(ifo,"^Geometry Column"))
                       ifo = ifo[(gk+1):length(ifo)]
@@ -85,8 +85,8 @@ for(i in geopackages){
                                         type="Spatial"
                                         ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                                         textent = ifo[7]
-                                        textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
                                         gk = which(str_detect(ifo,"^Geometry Column"))
+                                        textent =as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
                                               ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
@@ -123,7 +123,7 @@ for(i in shapefiles){
                                         type="Spatial"
                                         ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                                         textent=ifo[7]
-                                        textent = paste0(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)],collapse=",")
+                                        textent = as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
 
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
