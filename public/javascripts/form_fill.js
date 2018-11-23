@@ -29,17 +29,19 @@ function fillFields(el,target_id,parent_id,blank,field_type,colour){
   
     var field_list = window.client_pack.contents[parent_idx].Layers[this_idx];
     var ext = window.client_pack.contents[parent_idx].Layers[this_idx].Extent;
-    var ext = [[ext[1],ext[0]],[ext[3],ext[2]]];
+    if(ext != null){
 
-    window.rects.forEach(function(rect){if (rect.colour == colour){window.mymap.removeLayer(rect)}})
+        var ext = [[ext[1],ext[0]],[ext[3],ext[2]]];
 
-    myRect = L.rectangle(ext,{color:colour,weight:1}).bindPopup(this_value)
-    console.log(myRect.color)
-    myRect.colour = colour;
-    myRect.addTo(window.mymap);
-    window.rects.push(myRect)
-    window.mymap.fitBounds(ext);
+        window.rects.forEach(function(rect){if (rect.colour == colour){window.mymap.removeLayer(rect)}})
 
+        myRect = L.rectangle(ext,{color:colour,weight:1}).bindPopup(this_value)
+        console.log(myRect.color)
+        myRect.colour = colour;
+        myRect.addTo(window.mymap);
+        window.rects.push(myRect)
+        window.mymap.fitBounds(ext);
+    }
   var out=[];
   
   if(field_type=="String"){
