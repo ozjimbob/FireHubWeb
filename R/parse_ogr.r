@@ -39,6 +39,7 @@ for(i in geofolders){
                       ifo = ifo[(gk+1):length(ifo)]
                             ifo_fn = str_split(ifo,":") %>% map_chr(first)
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
+                            textent = c(0,0,0,0)
                                 }else{
                       type="Spatial"
                       ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
@@ -79,6 +80,7 @@ for(i in geopackages){
                 ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
                       gk = which(str_detect(ifo,"^FID Column"))
                       ifo = ifo[(gk+1):length(ifo)]
+                      textent = c(0,0,0,0)
                             ifo_fn = str_split(ifo,":") %>% map_chr(first)
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                 }else{
@@ -119,6 +121,7 @@ for(i in shapefiles){
                       ifo = ifo[(gk+1):length(ifo)]
                             ifo_fn = str_split(ifo,":") %>% map_chr(first)
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
+                            textent = c(0,0,0,0)
                                 }else{
                                         type="Spatial"
                                         ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
