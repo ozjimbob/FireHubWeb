@@ -76,22 +76,26 @@ function fillValues(file,layer,field,target){
   while (toadd.firstChild) {
         toadd.removeChild(toadd.firstChild);
   }
+    console.log("Forming request");
   let the_req={file: file,
            layer: layer,
-           field: field}
+               field: field}
+    console.log("Launching fetch request")
   fetch("/firetools/flistt",{
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(the_req)
   })
   .then((res) => res.json())
-  .then((data) => {
+        .then((data) => {
+            console.log("Received data...")
     var ar = data.contents;
     console.log(ar);
     var option=document.createElement("option");
     option.text="";
     option.value = "";
-    toadd.add(option);
+            toadd.add(option);
+            console.log("Populating drop-down")
     ar.forEach(function(element){
       var option = document.createElement("option");
       option.text = element;
