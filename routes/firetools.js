@@ -58,8 +58,8 @@ router.get('/', function(req, res, next) {
 
 // Handler to retrieve fields list from a geofile
 router.post('/flistt',async(req,res,next) =>{
-
-  var file = "storage/" + req.body.file;
+    console.log(req);
+    var file = "storage/" + req.body.file;
   var layer = req.body.layer;
   var field = req.body.field;
   

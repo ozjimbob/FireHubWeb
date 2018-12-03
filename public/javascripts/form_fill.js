@@ -82,7 +82,8 @@ function fillValues(file,layer,field,target){
                field: field}
     console.log("Launching fetch request")
   fetch("/firetools/flistt",{
-    method: 'POST',
+      method: 'POST',
+      credentials: 'include',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(the_req)
   })
