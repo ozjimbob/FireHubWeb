@@ -153,7 +153,7 @@ router.get('/list_an',async (req,res,next) =>{
 
 router.post('/define_analysis',async (req,res,next) =>{
   this_dp = req.body.datapack_id;
-  const pack_data = await db.query('select datapacks.* from datapacks where datapack_id = $1 and user_id = $2',[this_dp,req.session.user_id]);
+  const pack_data = await db.query('select datapacks.* from datapacks where datapack_id = $1',[this_dp]);
   if(pack_data.rowCount!=1){
     res.render('unauth',{title:'FireTools',message:'You are unauthorized to define an analysis based on this datapack.'});
     return;
