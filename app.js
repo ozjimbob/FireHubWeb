@@ -50,7 +50,7 @@ app.use(logger('dev'));
 var sess_options = {
     useAsync: true,
     reapInterval: 5000,
-    maxAge: 10000
+    maxAge: 1000000
 };
 
 
