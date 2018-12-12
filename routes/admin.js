@@ -66,6 +66,14 @@ router.get('/edit_user/:u_uuid',async(req,res,next)=>{
     res.render('edit_user',{title: 'FireTools Admin Add User',ul:user_exists.rows[0]});
 });
 
+// List Logs 
+
+router.get('/list_logs',async(req,res,next)=>{
+
+    const  pack_list = await db.query('select analysis.* from analysis left join users on analysis.user_id = users.user_id order by created_at desc');
+    res.render('list_logs',{pl: pack_list.rows,title:'FireTools Analyses'});
+});
+
 // List users
 
 router.get('/list_users',async(req,res,next)=>{

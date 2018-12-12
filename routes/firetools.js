@@ -168,7 +168,7 @@ router.post('/define_analysis',async (req,res,next) =>{
 
 
 router.get('/view_an/:an_uuid',async(req,res,next) => {
-  const analysis_query = await db.query('select * from analysis where analysis_id = $1 and user_id = $2;',[req.params.an_uuid,req.session.user_id]);
+  const analysis_query = await db.query('select * from analysis where analysis_id = $1;',[req.params.an_uuid]);
   if(analysis_query.rowCount!=1){
     res.render('unauth',{title:'FireTools',message:'You are unauthorized to view this analysis.'});
     return;

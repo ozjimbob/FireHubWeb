@@ -1,0 +1,40 @@
+extends layout
+
+
+block content
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        h2 List of Analyses
+        each val in pl
+          div.card
+            div.card-body
+              h5.card-title <img src="/images/map.png" width=64 \> #{val.name}
+              p.card-text= val.description
+              p.card-text <strong>Datapack ID:</strong> #{val.datapack_id}
+              p.card-text <strong>Start date:</strong> #{val.created_at}
+              p.card-text <strong>Status:</strong> #{val.status}
+              if (val.status == "Completed")
+                a.btn.btn-success(role='button',href='/firetools/view_an/'+val.analysis_id) Display Analysis
+              if (val.status == "Creating" || val.status == "In Progress")
+                .container
+                  .row
+                    .col-lg-4
+                      a.btn.btn-primary(role='button',href='/firetools/view_an/'+val.analysis_id) View Progress
+                    .col-lg-4
+                      <img src="/images/gear.gif" width-64 \>
+              if (val.status == "Error")
+                a.btn.btn-danger(role='button',href='/firetools/view_an/'+val.analysis_id) View Log
+              button.btn-danger.btn(type="button",data-toggle="modal",data-target="#myModal", data-uuid=val.analysis_id, data-url="/firetools/del_an/") Delete Analysis
+  .modal(tabindex="-1",role="dialog",id="myModal")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          h3.modal-title Delete Analysis?
+        .modal-body
+          p Do you wish to delete this analysis?
+        .modal-footer
+          button.btn.btn-secondary(data-dismiss="modal") Close
+          a.btn.btn-primary(id="del_button") Delete
