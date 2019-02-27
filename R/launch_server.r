@@ -95,6 +95,9 @@ droplet_ssh(d1,"mkdir config")
 droplet_upload(d1,config_file,"~/config/config_linux.r")
 droplet_upload(d1,"R/global_config.r","~/config/global_config.r")
 
+droplet_upload(d1,"R/grid.tif","~/config/grid.tif")
+
+droplet_upload(d1,"R/grid.tif.aux.xml","~/config/grid.tif.aux.xml")
 
 # Launch analysis
 
