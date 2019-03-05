@@ -10,6 +10,7 @@ args = commandArgs(trailingOnly=TRUE)
 # uuid name for the server
 server_names = args[1]
 server_names = strsplit(server_names,",")[[1]]
+server_names = c(server_names,"airrater-01","tiles")
 
 print("OAuth")
 # Auth with DigitalOcean
@@ -19,7 +20,7 @@ invisible(do_oauth())
 print("Checking for dead instance")
 
 dropnames = names(droplets())
-tokill = server_names
+tokill = setdiff(dropnames,server_names)
 
 print("Killing:")
 print(tokill)

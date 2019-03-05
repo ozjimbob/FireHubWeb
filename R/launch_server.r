@@ -116,11 +116,11 @@ print("Downloading results")
 # Download results
 dtesit <- try({
 
-    tuser = "root"
-    cmd = paste0("scp -r root@",droplet_id(as.droplet(d1)),":/root/FireTools2R/output ",output_folder)
-    a=system(cmd,intern=TRUE)
-    print(a)
-    #droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
+    #tuser = "root"
+    #cmd = paste0("scp -r root@",droplet_id(as.droplet(d1)),":/root/FireTools2R/output ",output_folder)
+    #a=system(cmd,intern=TRUE)
+    #print(a)
+    droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
 
 })
 

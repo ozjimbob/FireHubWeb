@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var fireToolsRouter = require('./routes/firetools');
 var adminRouter = require('./routes/admin');
+var schedule = require('node-schedule');
 
 var app = express();
 
@@ -20,6 +21,29 @@ global.__basedir = __dirname;
 // Connect to database
 
 const db = require('./db');
+
+var cleanZombie = schedule.scheduleJob('0 * * * *',async() =>{
+    const analysis_query = await db.query('select analysis_id from analysis where status = "Error";');
+    if(analysis_query.rowCount==0){
+        return
+    }
+    thisID = analysis_query.rows.map(x => x.analysis_id).join();
+    console.log(thisID);
+    var spawnZ = require('child_process').spawn,
+    run_Z    = spawnZ('R/kill_servers.r', [thisID]);
+})
+
+//var testZombie = schedule.scheduleJob('* * * * *',async() =>{
+//    const analysis_query = await db.query('select analysis_id from analysis;');
+//    if(analysis_query.rowCount==1){
+//        return
+//    }
+//    thisID = analysis_query.rows.map(x => x.analysis_id).join();
+//    console.log(thisID);
+//    var spawnZ = require('child_process').spawn,
+//    run_Z    = spawnZ('R/test_servers.r', [thisID]);
+
+//})
 
 
 function checkAuth (req, res, next) {
