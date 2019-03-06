@@ -114,7 +114,7 @@ if(class(rtest)=="try-error"){
 
 print("Downloading results")
 # Download results
-dtesit <- try({
+dtest <- try({
 
     #tuser = "root"
     #cmd = paste0("scp -r root@",droplet_id(as.droplet(d1)),":/root/FireTools2R/output ",output_folder)
