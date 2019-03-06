@@ -23,7 +23,7 @@ global.__basedir = __dirname;
 const db = require('./db');
 
 var cleanZombie = schedule.scheduleJob('0 * * * *',async() =>{
-    const analysis_query = await db.query('select analysis_id from analysis where status = \'Error\';');
+    var analysis_query = await db.query('select analysis_id from analysis where status = \'Error\';');
     if(analysis_query.rowCount>0){
         thisID = analysis_query.rows.map(x => x.analysis_id).join();
         console.log(thisID);
@@ -32,7 +32,7 @@ var cleanZombie = schedule.scheduleJob('0 * * * *',async() =>{
     }
 
 
-    const analysis_query = await db.query('select analysis_id from analysis where status = \'In Progress\';');
+    var analysis_query = await db.query('select analysis_id from analysis where status = \'In Progress\';');
     if(analysis_query.rowCount>0){
         thisID = analysis_query.rows.map(x => x.analysis_id).join();
         console.log(thisID);
