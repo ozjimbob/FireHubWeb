@@ -246,14 +246,22 @@ router.post('/start_analysis', async(req,res,next) =>{
         ar = ar.map(function(item){return "\"" + item + "\""}).join(",")
         var lineout = key + "<-c(" + ar +")";
       }else{
+        if(key == "subextent"){
+           if(form[key] == "NULL"){
+             var lineout = "subextent=NULL\n";
+           }else{
+             var lineout = "subextent = extent("+form[key]+")\n"
+           }
+        }else{
         var lineout = key + "<-\"" + form[key]+"\"";
+        }
       }
     }
     fs.appendFileSync(config_file,lineout + "\n");
 
 
   }  
-  fs.appendFileSync(config_file,'rast_temp<-"output"\nsubextent<-NULL\ngazette_gdb<-""\n')
+  fs.appendFileSync(config_file,'rast_temp<-"output"\ngazette_gdb<-""\n')
   // Asynchronously launch analysis
  
   var spawn = require('child_process').spawn,

@@ -104,6 +104,8 @@ block content
             input.form-control(name="ras_res",id="select_ras_res",value="25")
             label(for="select_current_year") Enter year to base time-since-fire analysis from. Defaults to current year.
             input.form-control(name="current_year",id="select_current_year",value=(new Date()).getFullYear())
+            label(for="select_extent") Enter extent limit (xmin,xmax,ymin,ymax).
+            input.form-control(name="proc_extent",id="select_extent",value="")
           button.btn.btn-primary(type='submit') Start Analysis
         .container
           .row
