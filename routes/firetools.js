@@ -191,6 +191,156 @@ router.get('/view_an/:an_uuid',async(req,res,next) => {
 
 });
 
+
+router.get('/restart_an/:an_uuid',async(req,res,next) =>{
+
+    var an_uuid = req.params.an_uuid;
+    const analysis_query = await db.query('select * from analysis where analysis_id = $1;',[an_uuid]);
+    
+    if(analysis_query.rowCount!=1){
+        res.render('unauth',{title:'FireTools',message:'You are unauthorized to view this analysis.'});
+        return;
+    }
+
+    if(aq.status=="In Progress"){
+        res.render('unauth',{title:'FireTools',message:'Analysis already running.'});
+        return;
+    }
+
+    var aq = analysis_query.rows[0];
+    var an_user = aq.user_id;
+    var an_name = aq.name;
+    var an_description=aq.description;
+    var an_pack_id = aq.datapack_id;
+    var an_run_year = aq.run_year;
+    var an_input_dir_hash = aq.input_dir_hash;
+    var an_output_dir_hash = aq.output_dir_hash;
+
+    const pack_data = await db.query('select * from datapacks where datapack_id = $1',[an_p]);
+    var dq = pack_data.rows[0];
+    var an_size = dq.size;
+    var an_status = 'In Progress';
+
+    console.log("send start email")
+    
+
+    var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+    var eml = stemail.rows[0].email;
+    const msg = {
+        to: eml,
+        from: from_email,
+        subject: 'FireTools Analysis ' + an_name + " launched",
+        text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+        html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
+    };
+    sgMail.send(msg);
+    
+    var {rows1} = await db.query('update analysis set status = $1 where analysis_id = $2;',[status,an_uuid]);
+
+
+    var {rows2} = await db.query('delete from analysis_log where analysis_id =  $1;', [an_uuid]);
+
+  var spawn = require('child_process').spawn,
+  run_an    = spawn('R/launch_server.r', [an_uuid, 'storage/' + an_pack_id + '/', 'output/' + an_uuid + '/config_linux.r', 'output/' + an_uuid , an_size]);
+
+  run_an.stdout.on('data', function (data) {
+    if(data.toString().length > 4 & data.toString().substring(0,2)!="  |"){ 
+      const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
+       [an_uuid,data.toString(),"Log"]);
+    }
+  });
+
+  run_an.stderr.on('data', function (data) {
+    if(data.toString().length > 4 & data.toString().substring(0,2)!="  |"){
+      const {rows} = db.query('insert into analysis_log (analysis_id,log_text,status) VALUES ($1,$2,$3);',
+       [an_uuid,data.toString(),"Error"]);
+    }
+    
+  });
+
+  run_an.on('exit', async (code) =>{
+    if(code.toString() == "0"){
+      console.log("Clean exit")
+      const {rows} = db.query("update analysis set status='Completed', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
+      
+      // move map directory
+      fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
+      
+        // move tile directory
+      fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
+    console.log("Sending email")
+    var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+    var eml = stemail.rows[0].email;
+      const msg = {
+          to: eml,
+          from: from_email,
+          subject: 'FireTools Analysis ' + an_name + " complete.",
+          text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+          html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
+      sgMail.send(msg);
+    console.log("email sent")
+
+      // zip directory for download
+      // zip.folder("output/"+an_uuid,"output/" + an_uuid + ".zip")
+      
+      // define zip output location
+      var output = fs.createWriteStream('output/'+an_uuid+'.zip');
+      var archive = archiver('zip', {
+          zlib: { level: 9 } // Sets the compression level.
+      });
+
+      // listen for all archive data to be written
+      // // 'close' event is fired only when a file descriptor is involved
+      output.on('close', function() {
+         console.log(archive.pointer() + ' total bytes');
+         console.log('archiver has been finalized and the output file descriptor has closed.');
+         deleteFolderRecursive('output/'+an_uuid);
+       });
+
+      // This event is fired when the data source is drained no matter what was the data source.
+      // // It is not part of this library but rather from the NodeJS Stream API.
+      // // @see: https://nodejs.org/api/stream.html#stream_event_end
+      output.on('end', function() {
+         console.log('Data has been drained');
+      });
+      console.log("Creating pipe")
+       archive.pipe(output);
+       // add directory
+      console.log("archiving directory")
+       archive.directory('output/'+an_uuid, false);
+      console.log("finalizing")
+
+       archive.finalize();
+
+        
+    }else{
+      console.log("Error exit")
+      const {rows} = db.query("update analysis set status='Error', completed_at=CURRENT_TIMESTAMP where analysis_id = $1;",[an_uuid]);
+
+    console.log("Sending email")
+    var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
+    var eml = stemail.rows[0].email;
+      const msg = {
+          to: eml,
+          from: from_email,
+          subject: 'FireTools Analysis ' + an_name + " ERROR.",
+          text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+          html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
+      sgMail.send(msg);
+    console.log("email sent")
+    }
+
+
+    console.log('child process exited with code ' + code.toString());
+
+  });
+
+  // When analysis complete, flag  database, send alert email
+  res.redirect('list_an');
+
+
+})
+
 router.post('/start_analysis', async(req,res,next) =>{
   form = req.body;
   // Create database entry
