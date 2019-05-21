@@ -202,12 +202,13 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
         return;
     }
 
+    var aq = analysis_query.rows[0];
+
     if(aq.status=="In Progress"){
         res.render('unauth',{title:'FireTools',message:'Analysis already running.'});
         return;
     }
 
-    var aq = analysis_query.rows[0];
     var an_user = aq.user_id;
     var an_name = aq.name;
     var an_description=aq.description;
