@@ -236,7 +236,7 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
     };
     sgMail.send(msg);
     
-    var {rows1} = await db.query('update analysis set status = $1 where analysis_id = $2;',[status,an_uuid]);
+    var {rows1} = await db.query('update analysis set status = $1 where analysis_id = $2;',[an_status ,an_uuid]);
 
 
     var {rows2} = await db.query('delete from analysis_log where analysis_id =  $1;', [an_uuid]);
