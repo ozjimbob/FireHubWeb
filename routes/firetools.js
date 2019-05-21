@@ -217,7 +217,7 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
     var an_input_dir_hash = aq.input_dir_hash;
     var an_output_dir_hash = aq.output_dir_hash;
 
-    const pack_data = await db.query('select * from datapacks where datapack_id = $1',[an_p]);
+    const pack_data = await db.query('select * from datapacks where datapack_id = $1',[an_pack_id]);
     var dq = pack_data.rows[0];
     var an_size = dq.size;
     var an_status = 'In Progress';
