@@ -104,6 +104,8 @@ block content
             input.form-control(name="ras_res",id="select_ras_res",value="25")
             label(for="select_current_year") Enter year to base time-since-fire analysis from. Defaults to current year.
             input.form-control(name="current_year",id="select_current_year",value=(new Date()).getFullYear())
+            label(for="select_first_year") Optionally, enter the first fire year to restrict history analysis to. Leave blank to use earliest fire in analysis region. 
+            input.form-control(name="v_TSFF",id="select_first_year",value="")
             label(for="select_extent") Enter extent limit (xmin,xmax,ymin,ymax).
             input.form-control(name="subextent",id="select_extent",value="NULL")
           button.btn.btn-primary(type='submit') Start Analysis
