@@ -511,7 +511,7 @@ router.post('/start_analysis', async(req,res,next) =>{
   });
 
   // When analysis complete, flag  database, send alert email
-  res.redirect('list_an');
+  res.redirect('/firetools/list_an');
 
 
 });
