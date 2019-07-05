@@ -69,6 +69,9 @@ block content
           div.form-group.ml-4
             label(for="input_c_sfaz") Enter code for SFAZ.
             input.form-control(name="c_sfaz",value="6103",id="input_c_sfaz")
+          div.form-group.ml-4
+            label(for="input_c_sfaz_custom") The recently treated category defaults to 0-6 years since fire. If you have a very long or very short SFAZ return interval, modify this to the amount of years which a SFAZ could be locally expected to remain “treated” before returning to monitor OFH in the field. Eg in the west this may be longer than 6 years or on the north coast this may shorter. Enter the maximum time in years for a block to be considered recently treated eg 10.
+            input.form-control(name="f_sfaz_custom",value="6",id="input_c_sfaz_custom")
           div.form-group.ml-3
             label(for="select_i_vt_veg_lut") Select lookup table containing vegetation data.
             select.form-control(name="i_vt_veg_lut",id="select_i_vt_veg_lut",onclick="fillFields(this,'select_f_vegid','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmax','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmin','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegadv','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegfireprone','select_fire_gdb',0,'Numeric')")
