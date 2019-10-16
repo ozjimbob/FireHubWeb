@@ -14,7 +14,7 @@ router.get('/login/:msg',function(req,res,next){
 
 router.post('/login', async (req,res,next) =>{
 
-	const {rows} = await db.query('select * from users where email = $1',[req.body.email]);
+	const {rows} = await db.query('select * from users where upper(email) = $1',[req.body.email.toUpperCase()]);
   if(rows.length == 0){
        res.redirect('/login/Login Failed');
   };
