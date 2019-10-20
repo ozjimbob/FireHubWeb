@@ -42,19 +42,19 @@ block content
           
           div.tab-pane.fade(id="output1",role="tabpanel",aria-labelledby="output1-tab")
             h2 Heritage Threshold Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/heritage.html",width="100%",height="500px")
+            img(src = "/ftmaps/"+analysis_query.analysis_id+"/heritage.png")
           div.tab-pane.fade(id="output2",role="tabpanel",aria-labelledby="output2-tab")
             h2 FMZ + SFAZ Threshold Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz.html",width="100%",height="500px")
+            img(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz.png")
           div.tab-pane.fade(id="output3",role="tabpanel",aria-labelledby="output3-tab")
             h2 Combined Heritage + FMZ + SFAZ Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz_bio.html",width="100%",height="500px")
+            img(src = "/ftmaps/"+analysis_query.analysis_id+"/sfaz_fmz_bio.png")
           div.tab-pane.fade(id="output4",role="tabpanel",aria-labelledby="output4-tab")
             h2 Time Since Last Fire Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/tsl.html",width="100%",height="500px")
+            img(src = "/ftmaps/"+analysis_query.analysis_id+"/tsl.png")
           div.tab-pane.fade(id="output5",role="tabpanel",aria-labelledby="output5-tab")
             h2 Number of Times Burnt Map
-            iframe(src = "/ftmaps/"+analysis_query.analysis_id+"/ntb.html",width="100%",height="500px")
+            img(src = "/ftmaps/"+analysis_query.analysis_id+"/ntb.png")
           div.tab-pane.fade(id="download",role="tabpane;",aria-labelledby="download-tab")
             h2 Download Analysis Output
             p Click here to download a ZIP file containing the analysis output layers, including rasters and vector layers.
