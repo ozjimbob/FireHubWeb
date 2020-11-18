@@ -26,6 +26,7 @@ router.post('/login', async (req,res,next) =>{
           req.session.email = req.body.email;
 				  req.session.admin = rows[0].admin;
 				  req.session.name = rows[0].name;
+          req.session.phone = rows[0].phone;
 				  req.session.user_id = rows[0].user_id;
           console.log(req.session.admin);
           res.redirect('/firetools');
@@ -43,6 +44,7 @@ router.get("/logout",function(req,res,next){
 	delete req.session.email;
 	delete req.session.admin;
 	delete req.session.name;
+  delete req.session.phone;
 	delete req.session.user_id;
 	res.redirect('/');
 });
@@ -88,6 +90,7 @@ router.post('/do_add_user',async(req,res,next)=>{
 var name = req.body.name;
 
     var email = req.body.email;
+    var phone = req.body.phone;
 const user_exists = await db.query('select * from users where email = $1',[email]);
 if(user_exists.rowCount!=0){
   res.render('unauth',{title:'FireTools',message:'This user email address already exists.'});
@@ -99,8 +102,8 @@ var password = req.body.password;
 var admin = Boolean(req.body.admin);
 let hash = bcrypt.hashSync(password, 10);
 
-const {rows} = await db.query('insert into users (name,email,password,admin) VALUES ($1,$2,$3,$4);',
- [name,email,hash,admin]);  
+const {rows} = await db.query('insert into users (name,email,password,admin,phone) VALUES ($1,$2,$3,$4,$5);',
+ [name,email,hash,admin,phone]);  
 
 res.render('done_add_user',{title: 'FireTools User Added'});
 
@@ -113,6 +116,7 @@ router.post('/do_edit_user',async(req,res,next)=>{
     var name = req.body.name;
     var user_id = req.body.user_id;
     var email = req.body.email;
+    var phone = req.body.phone;
     console.log(email)
     const user_exists = await db.query('select * from users where email = $1 and user_id <> $2',[email,user_id]);
     console.log(user_exists)
@@ -128,10 +132,10 @@ router.post('/do_edit_user',async(req,res,next)=>{
 
     if(password == ""){
         console.log("Edit: No password change")
-        const {rows} = await db.query('update users set (name,email,admin) = ($1,$2,$3) where user_id = $4',[name,email,admin,user_id])
+        const {rows} = await db.query('update users set (name,email,admin,phone) = ($1,$2,$3,$5) where user_id = $4',[name,email,admin,user_id,phone])
     }else{
         console.log("Edit: Password change")
-        const {rows} = await db.query('update users set (name,email,admin,password) = ($1,$2,$3,$4) where user_id = $5',[name,email,admin,hash,user_id])
+        const {rows} = await db.query('update users set (name,email,admin,password,phone) = ($1,$2,$3,$4,$6) where user_id = $5',[name,email,admin,hash,user_id,phone])
     }
     res.render('done_edit_user',{title: 'FireTools User Edited'});
 
