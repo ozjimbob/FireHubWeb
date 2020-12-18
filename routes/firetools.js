@@ -193,7 +193,7 @@ router.get('/view_an/:an_uuid',async(req,res,next) => {
 
 
 router.get('/restart_an/:an_uuid',async(req,res,next) =>{
-
+    const { exec } = require('child_process');
     var an_uuid = req.params.an_uuid;
     const analysis_query = await db.query('select * from analysis where analysis_id = $1;',[an_uuid]);
     
@@ -227,15 +227,25 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
 
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
-    const msg = {
-        to: eml,
-        from: from_email,
-        subject: 'FireTools Analysis ' + an_name + " launched",
-        text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-        html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
-    };
-    sgMail.send(msg);
     
+    
+    //const msg = {
+    //    to: eml,
+    //    from: from_email,
+    //    subject: 'FireTools Analysis ' + an_name + " launched",
+    //    text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+    //    html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
+    //};
+    //sgMail.send(msg);
+    
+exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 1', (error, stdout, stderr) => {
+    if (error) {
+          console.error(`exec error: ${error}`);
+              return;
+                }
+      console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+});
     var {rows1} = await db.query('update analysis set status = $1 where analysis_id = $2;',[an_status ,an_uuid]);
 
 
@@ -272,14 +282,25 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
-      const msg = {
-          to: eml,
-          from: from_email,
-          subject: 'FireTools Analysis ' + an_name + " complete.",
-          text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-          html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
-      sgMail.send(msg);
-    console.log("email sent")
+   //   const msg = {
+   //       to: eml,
+   //       from: from_email,
+   //       subject: 'FireTools Analysis ' + an_name + " complete.",
+   //       text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+   //       html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
+   //   sgMail.send(msg);
+    
+      exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 2', (error, stdout, stderr) => {
+          if (error) {
+                console.error(`exec error: ${error}`);
+                    return;
+                      }
+            console.log(`stdout: ${stdout}`);
+              console.error(`stderr: ${stderr}`);
+      });
+      
+      
+      console.log("email sent")
 
       // zip directory for download
       // zip.folder("output/"+an_uuid,"output/" + an_uuid + ".zip")
@@ -320,14 +341,24 @@ router.get('/restart_an/:an_uuid',async(req,res,next) =>{
 
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
-    var eml = stemail.rows[0].email;
-      const msg = {
-          to: eml,
-          from: from_email,
-          subject: 'FireTools Analysis ' + an_name + " ERROR.",
-          text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-          html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
-      sgMail.send(msg);
+    //var eml = stemail.rows[0].email;
+    //  const msg = {
+    //      to: eml,
+    //      from: from_email,
+    //      subject: 'FireTools Analysis ' + an_name + " ERROR.",
+    //      text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+    //      html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
+    //  sgMail.send(msg);
+    
+    exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 3', (error, stdout, stderr) => {
+        if (error) {
+              console.error(`exec error: ${error}`);
+                  return;
+                    }
+          console.log(`stdout: ${stdout}`);
+            console.error(`stderr: ${stderr}`);
+    });
+    
     console.log("email sent")
     }
 
@@ -355,6 +386,8 @@ router.post('/start_analysis', async(req,res,next) =>{
   var an_output_dir_hash = an_uuid;
   var an_size = req.body.an_size;
   var an_status = 'In Progress';
+  const { exec } = require('child_process');
+  
   console.log(an_user);
 
   console.log("send start email")
@@ -362,15 +395,24 @@ router.post('/start_analysis', async(req,res,next) =>{
 
   var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
  var eml = stemail.rows[0].email;
- const msg = {
-          to: eml,
-          from: from_email,
-          subject: 'FireTools Analysis ' + an_name + " launched",
-          text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-          html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
- };
-      sgMail.send(msg);
+ //const msg = {
+ //         to: eml,
+ //         from: from_email,
+ //         subject: 'FireTools Analysis ' + an_name + " launched",
+ //         text: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). Click here to view the progress:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+ //         html: 'FireTools analysis ' + an_name + ' has started (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the progress.</a> '
+ //};
+ //     sgMail.send(msg);
  
+exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 1', (error, stdout, stderr) => {
+    if (error) {
+          console.error(`exec error: ${error}`);
+              return;
+                }
+      console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+});
+
 
   const {rows} = await db.query('insert into analysis (analysis_id,user_id,name,description,datapack_id,run_year,input_dir_hash,output_dir_hash,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
        [an_uuid,an_user,an_name,an_description,an_pack_id,an_run_year,an_input_dir_hash, an_output_dir_hash,an_status]);
@@ -446,13 +488,22 @@ router.post('/start_analysis', async(req,res,next) =>{
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
-      const msg = {
-          to: eml,
-          from: from_email,
-          subject: 'FireTools Analysis ' + an_name + " complete.",
-          text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-          html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
-      sgMail.send(msg);
+//      const msg = {
+//          to: eml,
+//          from: from_email,
+//          subject: 'FireTools Analysis ' + an_name + " complete.",
+//          text: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). Click here to view and download the results:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+//          html: 'FireTools analysis ' + an_name + ' is complete (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view and download the results.</a> '};
+//      sgMail.send(msg);
+
+exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 2', (error, stdout, stderr) => {
+    if (error) {
+          console.error(`exec error: ${error}`);
+              return;
+                }
+      console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+});
     console.log("email sent")
 
       // zip directory for download
@@ -495,13 +546,22 @@ router.post('/start_analysis', async(req,res,next) =>{
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
-      const msg = {
-          to: eml,
-          from: from_email,
-          subject: 'FireTools Analysis ' + an_name + " ERROR.",
-          text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
-          html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
-      sgMail.send(msg);
+//      const msg = {
+//          to: eml,
+//          from: from_email,
+//          subject: 'FireTools Analysis ' + an_name + " ERROR.",
+//          text: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). Click here to view the log:\n http://' + process.env.SERVER_DOMAIN + "/firetools/view_an/" + an_uuid + "",
+//          html: 'FireTools analysis ' + an_name + ' quit with an error (analysis id: ' + an_uuid + '). <a href="http://' + process.env.SERVER_DOMAIN + '/firetools/view_an/' + an_uuid + '">Click here to view the log.</a> '};
+//      sgMail.send(msg);
+exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+eml+' '+an_uuid+' \\"'+an_name+'\\" 3', (error, stdout, stderr) => {
+    if (error) {
+          console.error(`exec error: ${error}`);
+              return;
+                }
+      console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+});
+
     console.log("email sent")
     }
 

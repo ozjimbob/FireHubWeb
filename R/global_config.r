@@ -12,5 +12,5 @@ rasterOptions(progress="",timer=TRUE,chunksize = 10000)
 
 OS="Linux"
 
-old=TRUE
+old=FALSE
 
