@@ -8,6 +8,12 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Bushfire Risk Management Web'});
 });
 
+router.get('/about', function(req, res, next) {
+  res.render('about', { title: 'About - Bushfire Risk Management Web'});
+});
+
+
+
 router.get('/login/:msg',function(req,res,next){
   res.render('login',{msg:req.params.msg});
 });
