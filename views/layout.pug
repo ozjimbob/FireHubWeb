@@ -18,6 +18,9 @@ html(lang='en')
   body
     .container
       .page-header
-        h1= title
+        p(style="float: left;")
+          img(src="/images/logo.png" width=80)
+        h2 NSW Bushfire Hub
+        h3= title
       include menu.pug
       block content

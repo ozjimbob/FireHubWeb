@@ -5,11 +5,11 @@ var bcrypt = require('bcrypt');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Bushfire Risk Management Web'});
+  res.render('index', { title: 'FireTools'});
 });
 
 router.get('/about', function(req, res, next) {
-  res.render('about', { title: 'About - Bushfire Risk Management Web'});
+  res.render('about', { title: 'About'});
 });
 
 
