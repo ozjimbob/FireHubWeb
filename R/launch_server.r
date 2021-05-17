@@ -45,7 +45,7 @@ while(connected==FALSE){
           print("Existing server for this analysis found - must be orphan. Deleting")
           id = which(dropnames == server_name)[1]
           to_delete = droplets()[[id]]
-          if(to_delete$name %in% c("airrater-01","tiles")){next}
+          if(to_delete$name %in% c("airrater-01","tiles","NSWFireHub","firehub-web","heatwave","othertools")){next}
             try({droplet_delete(to_delete)})
             Sys.sleep(15)
         }else{
@@ -58,7 +58,7 @@ while(connected==FALSE){
 
       ctest = try({
         print("Attempting to create droplet")
-        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 84193403,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
+        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 84195329,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
         Sys.sleep(30)
         print("Attempting to get ID of droplet")
         # Get ID of droplet
