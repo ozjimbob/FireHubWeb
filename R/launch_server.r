@@ -58,7 +58,7 @@ while(connected==FALSE){
 
       ctest = try({
         print("Attempting to create droplet")
-        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
+        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 84193403,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
         Sys.sleep(30)
         print("Attempting to get ID of droplet")
         # Get ID of droplet
