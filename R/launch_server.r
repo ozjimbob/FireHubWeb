@@ -22,7 +22,8 @@ output_folder = args[4]
 # PackSize
 pack_size = as.numeric(args[5])
 if(pack_size > 50000000){
-      isize = "s-8vcpu-32gb"
+  # Alt m3-8vcpu-64
+  isize = "s-8vcpu-32gb"
 }else{
       isize = "s-6vcpu-16gb"
 }
