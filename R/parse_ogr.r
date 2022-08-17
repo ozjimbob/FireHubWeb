@@ -7,7 +7,7 @@ suppressMessages(require(gdalUtils))
 
 
 #library(vapour)
-Sys.sleep(20)
+Sys.sleep(60)
 args = commandArgs(trailingOnly=TRUE)
 root = args[1]
 

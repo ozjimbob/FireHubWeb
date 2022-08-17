@@ -13,4 +13,6 @@ rasterOptions(progress="",timer=TRUE,chunksize = 10000)
 OS="Linux"
 
 old=FALSE
+sf::sf_use_s2(FALSE)
+new_analysis=TRUE
 

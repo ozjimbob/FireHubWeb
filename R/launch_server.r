@@ -22,10 +22,13 @@ output_folder = args[4]
 # PackSize
 pack_size = as.numeric(args[5])
 if(pack_size > 50000000){
-  # Alt m3-8vcpu-64
-  isize = "s-8vcpu-32gb"
+      #isize = "s-8vcpu-32gb"
+
+      isize = "s-8vcpu-32gb"
+      print("Large instance")
 }else{
-      isize = "s-6vcpu-16gb"
+      print("Small instance")
+      isize = "s-8vcpu-16gb"
 }
 
 
@@ -59,7 +62,9 @@ while(connected==FALSE){
 
       ctest = try({
         print("Attempting to create droplet")
-        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 84195329,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
+        #invisible(d1 <- droplet_create(server_name,region="sgp1",image = 36546482,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
+        #invisible(d1 <- droplet_create(server_name,region="sgp1",image = 84195329,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
+        invisible(d1 <- droplet_create(server_name,region="sgp1",image = 114041470,size=isize,ssh_keys = "geokey",wait = TRUE,do.wait_time = 15))
         Sys.sleep(30)
         print("Attempting to get ID of droplet")
         # Get ID of droplet
@@ -67,6 +72,8 @@ while(connected==FALSE){
         #Print IP address
         print(d1$networks$v4[[1]]$ip_address)
         Sys.sleep(30)
+        print("Making swapfile")
+        droplet_ssh(d1,"sudo fallocate -l 40G /swapfile;sudo chmod 600 /swapfile;sudo mkswap /swapfile;sudo swapon /swapfile")
        #   print("Setting up system monitoring")
         #    droplet_ssh(d1,"curl -sSL https://agent.digitalocean.com/install.sh | sh")
         #    tag_resource(name = "firetools", resource_id = d1$id)
@@ -74,7 +81,7 @@ while(connected==FALSE){
         # Install FireTools
         droplet_ssh(d1,"git clone https://github.com/ozjimbob/FireTools2R")
       })
-  
+
      if(class(ctest)=="try-error"){
        print("No SSH, retrying")
        Sys.sleep(30)
@@ -142,6 +149,4 @@ if(class(dtest)=="try-error"){
       warning("#!#!#!# Droplet delete failed")
   quit("no",status=1)
 }
-
-
 
