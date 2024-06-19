@@ -6,7 +6,7 @@ gdal_rasterize = paste0(gdal_path,"gdal_rasterize")
 gdal_polygonize = paste0(gdal_path,"gdal_polygonize.py")
 
 # Define number of cores
-clustNo = 5
+clustNo =4 
 
 rasterOptions(progress="",timer=TRUE,chunksize = 10000)
 

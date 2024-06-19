@@ -102,6 +102,7 @@ var dpUpload = upload.fields([{name:'name',maxCount:1},
 // Process uploaded file
 
 router.post('/post_upload',dpUpload, async (req,res,next) =>{
+	req.socket.setTimeout(10 * 60 * 1000);
 	// here we deal with the file
   if(req.fileValidationError){
     res.render('upload_error',{title: 'FireTools'});
@@ -278,7 +279,7 @@ exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+em
       fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
       
         // move tile directory
-      fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
+      // fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
@@ -341,7 +342,7 @@ exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+em
 
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
-    //var eml = stemail.rows[0].email;
+    var eml = stemail.rows[0].email;
     //  const msg = {
     //      to: eml,
     //      from: from_email,
@@ -484,7 +485,7 @@ exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+em
       fs.renameSync("output/" + an_uuid + "/output/maps","maps/" + an_uuid)
       
         // move tile directory
-      fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
+      //fs.renameSync("output/" + an_uuid + "/output/tiles","public/tiles/" + an_uuid)
     console.log("Sending email")
     var stemail =  await db.query('select * from users where user_id = $1;',[an_user])
     var eml = stemail.rows[0].email;
