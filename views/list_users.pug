@@ -21,5 +21,7 @@ block content
                     p Created at: #{val.created_at}
                   td.col-lg-6
                     a.btn.btn-primary(role='button',href='/admin/edit_user/'+val.user_id) Edit User
+                    a.btn.btn-danger(role='button',href='/admin/delete_user/'+val.user_id, onclick='return confirm("Confirm delete user?");') Delete User 
+
           
 

@@ -65,7 +65,22 @@ router.get('/edit_user/:u_uuid',async(req,res,next)=>{
         res.render('unauth',{title:'FireTools',message:'This user does not exist.'});
         return;
     }
-    res.render('edit_user',{title: 'FireTools Admin Add User',ul:user_exists.rows[0]});
+    res.render('edit_user',{title: 'FireTools Admin Edited User',ul:user_exists.rows[0]});
+});
+
+
+// Delete user
+
+router.get('/delete_user/:u_uuid',async(req,res,next)=>{
+  console.log(req.params.u_uuid)
+  const user_exists = await db.query('select * from users where user_id = $1',[req.params.u_uuid])
+  if(user_exists.rowCount==0){
+      res.render('unauth',{title:'FireTools',message:'This user does not exist.'});
+      return;
+  }
+  var result = await db.query('delete from users where user_id = $1',[req.params.u_uuid]);
+
+  res.render('done_delete_user',{title: 'FireTools Admin Deleted User'});
 });
 
 // List Logs 
