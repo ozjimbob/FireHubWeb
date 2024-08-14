@@ -102,7 +102,7 @@ var dpUpload = upload.fields([{name:'name',maxCount:1},
 // Process uploaded file
 
 router.post('/post_upload',dpUpload, async (req,res,next) =>{
-	req.socket.setTimeout(10 * 60 * 1000);
+	req.socket.setTimeout(30 * 60 * 1000);
 	// here we deal with the file
   if(req.fileValidationError){
     res.render('upload_error',{title: 'FireTools'});
