@@ -1,0 +1,131 @@
+extends layout
+
+block content
+  script window.client_pack = !{locals.client_pack};
+  script console.log(window.client_pack);
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        p Setting up severity-based analysis of datapack: #{pack_data.datapack_id}
+        form(method='POST',action = 'start_analysis')
+          h2 Define Analysis Information
+          div.form-group
+            label(for="enter_name") Analysis name
+            input.form-control(name="name",id="enter_name")
+            label(for="enter_description") Analysis description
+            textarea.form-control(rows=3,name="description",id="enter_description")
+            input(name="pack_id",id="dpid",type="hidden",value=pack_data.datapack_id)
+            input(name="an_size",id="an_sizeid",type="hidden",value=pack_data.size)
+            input(name="sev_process",id="sev_processid",type="hidden",value="TRUE")
+          h2 Select Corporate Geodatabase
+          div.form-group
+            label(for="select_corp_gdb") This database contains the regional or other boundaries that define the extent of the analysis.
+            select.form-control(name="corp_gdb",id="select_corp_gdb",onclick="fillLayers(this,'select_i_vt_boundary','Spatial')")
+              each db in pack_data.contents
+                option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
+            label(for="select_i_vt_boundary") Select the spatial layer in this database that holds the analysis boundary
+            select.form-control(name="i_vt_boundary",id="select_i_vt_boundary",onclick="fillFields(this,'select_f_spatial_unit','select_corp_gdb',1,'String','#ff7777')")
+          div.form-group.ml-4
+            label(for="select_f_spatial_unit") Select the field of this layer containing the names of the spatial units to filter by, or select NONE to use the entire layer.
+            select.form-control(name="f_spatial_unit",id="select_f_spatial_unit",onclick="fillValues(getElementById('dpid').value + getElementById('select_corp_gdb').value,getElementById('select_i_vt_boundary').value, getElementById('select_f_spatial_unit').value,'input_d_spatial_unit')")
+          div.form-group.ml-5
+            label(for="input_d_spatial_unit") Enter the name of the spatial unit in this field to restrict the analysis to.
+            select.form-control(name="d_spatial_unit",id="input_d_spatial_unit")
+          h2 Select Asset Geodatabase
+          div.form-group
+            label(for="select_asset_gdb") This database contains the polygon layer with fire management zone areas.
+            select.form-control(name="asset_gdb",id="select_asset_gdb",onclick="fillLayers(this,'select_i_vt_fmz','Spatial')")
+              each db in pack_data.contents
+                option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
+            label(for="select_i_vt_fmz") Select layer containing fire mangement zone polygons.
+            select.form-control(name="i_vt_fmz",id="select_i_vt_fmz",onclick="fillFields(this,'select_f_fmz','select_asset_gdb',0,'Numeric','#66ff66')")
+          div.form-group.ml-4
+            label(for="select_f_fmz") Select field containing fire management zone code.
+            select.form-control(name="f_fmz",id="select_f_fmz")
+          h2 Select Fire History Geodatabase
+          div.form-group
+            label(for="select_fire_gdb") This database contains the fire hsitory polygons, as well as the FMZ and vegetation type look-up tables.
+            select.form-control(name="fire_gdb",id="select_fire_gdb",onclick="fillLayers(this,'select_i_vt_fire_history','Spatial');fillLayers(this,'select_i_vt_fmz_lut','Table');fillLayers(this,'select_i_vt_veg_lut','Table')")
+              each db in pack_data.contents
+                option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-3
+            label(for="select_i_vt_fire_history") Select layer containing fire history polygons.
+            select.form-control(name="i_vt_fire_history",id="select_i_vt_fire_history",onclick="fillFields(this,'select_f_fireseason','select_fire_gdb',0,'Numeric','#6666ff')")
+          div.form-group.ml-4
+            label(for="select_f_fireseason") Select field contianing fire season date.
+            select.form-control(name="f_fireseason",id="select_f_fireseason")
+          div.form-group.ml-3
+            label(for="select_i_vt_fmz_lut") Select lookup table containing FMZ codes.
+            select.form-control(name="i_vt_fmz_lut",id="select_i_vt_fmz_lut",onclick="fillFields(this,'select_f_vt_fmz','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vt_maxint','select_fire_gdb',0,'Numeric')")
+          div.form-group.ml-4
+            label(for="select_f_vt_fmz") Select field containing fire zone field code.
+            select.form-control(name="f_vt_fmz",id="select_f_vt_fmz")
+          div.form-group.ml-4
+            label(for="select_f_vt_maxint") Select field containing maximum fire interval.
+            select.form-control(name="f_vt_maxint",id="select_f_vt_maxint")
+          div.form-group.ml-4
+            label(for="input_c_sfaz") Enter code for SFAZ.
+            input.form-control(name="c_sfaz",value="6103",id="input_c_sfaz")
+          div.form-group.ml-4
+            label(for="input_c_sfaz_custom") The recently treated category defaults to 0-6 years since fire. If you have a very long or very short SFAZ return interval, modify this to the amount of years which a SFAZ could be locally expected to remain “treated” before returning to monitor OFH in the field. Eg in the west this may be longer than 6 years or on the north coast this may shorter. Enter the maximum time in years for a block to be considered recently treated eg 10.
+            input.form-control(name="f_sfaz_custom",value="6",id="input_c_sfaz_custom")
+          div.form-group.ml-3
+            label(for="select_i_vt_veg_lut") Select lookup table containing vegetation data.
+            select.form-control(name="i_vt_veg_lut",id="select_i_vt_veg_lut",onclick="fillFields(this,'select_f_vegid','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmax','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmin_low','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegmin','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegadv','select_fire_gdb',0,'Numeric');fillFields(this,'select_f_vegfireprone','select_fire_gdb',0,'Numeric')")
+          div.form-group.ml-4
+            label(for="select_f_vegid") Select field containing vegetation code.
+            select.form-control(name="f_vegid",id="select_f_vegid")
+          div.form-group.ml-4
+            label(for="select_f_vegmax") Select field containing maximum fire interval.
+            select.form-control(name="f_vegmax",id="select_f_vegmax")
+          div.form-group.ml-4
+            label(for="select_f_vegmin_low") Select field containing <em>low</em> severity minimum fire interval.
+            select.form-control(name="f_vegmin_low",id="select_f_vegmin_low")
+          div.form-group.ml-4
+            label(for="select_f_vegmin") Select field containing <em>high</em> severity minimum fire interval.
+            select.form-control(name="f_vegmin",id="select_f_vegmin")
+          div.form-group.ml-4
+            label(for="select_f_vegadv") Select field containing fire advantage.
+            select.form-control(name="f_vegadv",id="select_f_vegadv")
+          div.form-group.ml-4
+            label(for="select_f_vegfireprone") Select field containing fire prone status.
+            select.form-control(name="f_vegfireprone",id="select_f_vegfireprone")
+          h2 Select vegetation geodatabase.
+          div.form-group
+            label(for="select_veg_gdb") This database contains the polygons for vegetation types. 
+            select.form-control(name="veg_gdb",id="select_veg_gdb",onclick="fillLayers(this,'select_i_vt_veg','Spatial')")
+              each db in pack_data.contents
+                option(value=db.FilePath) #{db.FilePath}
+          div.form-group.ml-4
+            label(for="select_i_vt_veg") Select layers containing the vegetation polygons. You may select multiple layers by holding down <strong>CTRL</strong>.
+            select.form-control(name="i_vt_veg",id="select_i_vt_veg",multiple)
+          h2 Define project spatial environment
+          div.form-group
+            label(for="select_proj_crs") Enter project CRS projection. By default Lambert Conformal Cubic for NSW is entered
+            textarea.form-control(rows=3,name="proj_crs",id="select_proj_crs") +proj=lcc +lat_1=-30.75 +lat_2=-35.75 +lat_0=-33.25 +lon_0=147 +x_0=9300000 +y_0=4500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
+            label(for="select_ras_res") Enter raster calculation resolution in metres.
+            input.form-control(name="ras_res",id="select_ras_res",value="25")
+            -
+             var dd = new Date()
+             var ii = dd - 182 * 24 * 60 * 60 * 1000
+             dd.setTime(ii)
+             var ty = dd.getFullYear()
+            label(for="select_current_year") Enter year to base time-since-fire analysis from. Defaults to current financial year eg. 2022/23 Fire Year = 2022.
+            input.form-control(name="current_year",id="select_current_year",value=(ty))
+            label(for="select_first_year") Optionally, enter the first fire year to restrict history analysis to. Leave blank to use earliest fire in analysis region. 
+            input.form-control(name="v_TSFF",id="select_first_year",value="")
+            label(for="select_extent") Enter extent limit (xmin,xmax,ymin,ymax).
+            input.form-control(name="subextent",id="select_extent",value="NULL")
+          button.btn.btn-primary(type='submit') Start Analysis
+        .container
+          .row
+            .col-12
+              p Map
+              div(id = "map",style="height:400px;")
+              p End of Map
+
+  script(type="application/javascript",src="/javascripts/def_map.js")
