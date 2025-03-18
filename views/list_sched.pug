@@ -1,0 +1,18 @@
+extends layout
+
+
+block content
+  .container
+    .row
+      .col-lg-2
+        include ft_menu.pug
+      .col-lg-10
+        h2 List of Scheduled Analyses
+        each val in pl
+          div.card
+            div.card-body
+              h5.card-title <img src="/images/map.png" width=64 \> #{val.name}
+              p.card-text <strong>Analysis Type:</strong> #{val.type}
+              p.card-text <strong>Analysis Run Date:</strong> #{val.created_at}
+                a.btn.btn-success(role='button',href="/firetools/dl_sched/"+val.id) <img src="/images/dl.png" /> Download Analysis Pack
+              

@@ -1,10 +1,15 @@
 #!/usr/bin/Rscript
 
 suppressMessages(require(tidyverse))
+suppressMessages(require(stringr))
 suppressMessages(require(sf))
 suppressMessages(require(rjson))
-suppressMessages(require(gdalUtils))
+#suppressMessages(require(gdalUtils))
 
+ogrinfo <- function(i,j){
+  ifo = system(paste0("ogrinfo -ro -so -dialect SQLITE ",i," ",j),intern=TRUE)
+  ifo
+}
 
 #library(vapour)
 Sys.sleep(240)
@@ -34,7 +39,7 @@ for(i in geofolders){
             
               if(is.na(layer_list$geomtype[[j]][1])){
                       type="Table"
-                ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                ifo = ogrinfo(i,layer_list$name[j])
                       gk = which(str_detect(ifo,"^FID Column"))
                       ifo = ifo[(gk+1):length(ifo)]
                             ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -42,7 +47,8 @@ for(i in geofolders){
                             textent = c(0,0,0,0)
                                 }else{
                       type="Spatial"
-                      ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                      
+		      ifo = ogrinfo(i,layer_list$name[j])
                       textent = ifo[7]
                       textent = as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
 
@@ -62,7 +68,6 @@ for(i in geofolders){
 }
 
 
-
 for(i in geopackages){
     layer_list = st_layers(i)
   sl = list()
@@ -77,7 +82,7 @@ for(i in geopackages){
               
               if(is.na(layer_list$geomtype[[j]][1])){
                       type="Table"
-                ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                ifo = ogrinfo(i,layer_list$name[j])
                       gk = which(str_detect(ifo,"^FID Column"))
                       ifo = ifo[(gk+1):length(ifo)]
                       textent = c(0,0,0,0)
@@ -85,7 +90,7 @@ for(i in geopackages){
                             ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
                                 }else{
                                         type="Spatial"
-                                        ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        ifo = ogrinfo(i,layer_list$name[j])
                                         textent = ifo[7]
                                         gk = which(str_detect(ifo,"^Geometry Column"))
                                         textent =as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
@@ -105,6 +110,7 @@ for(i in geopackages){
 
 for(i in shapefiles){
     layer_list = st_layers(i)
+			   
   sl = list()
     sl$FilePath = str_replace(i,root,"")
     sl$FileType = "ESRI_Shapefile"
@@ -116,7 +122,7 @@ for(i in shapefiles){
               
               if(is.na(layer_list$geomtype[[j]][1])){
                       type="Table"
-                ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                ifo = ogrinfo(i,layer_list$name[j])
                       gk = which(str_detect(ifo,"^FID Column"))
                       ifo = ifo[(gk+1):length(ifo)]
                             ifo_fn = str_split(ifo,":") %>% map_chr(first)
@@ -124,11 +130,11 @@ for(i in shapefiles){
                             textent = c(0,0,0,0)
                                 }else{
                                         type="Spatial"
-                                        ifo = ogrinfo(i,layer_list$name[j],ro=TRUE,dialect="SQLITE",so=TRUE)
+                                        ifo = ogrinfo(i,layer_list$name[j])
                                         textent=ifo[7]
                                         textent = as.numeric(strsplit(textent,"\\(|\\)|\\,|\\ ")[[1]][c(3,5,9,11)])
-
-                                        gk = which(str_detect(ifo,"^Geometry Column"))
+                                        gk = length(ifo) - layer_list$fields[j]
+                                        #gk = which(str_detect(ifo,"^Geometry Column"))
                                         ifo = ifo[(gk+1):length(ifo)]
                                               ifo_fn = str_split(ifo,":") %>% map_chr(first)
                                               ifo_fy = str_split(ifo,":") %>% map_chr(last) %>% word(2)
@@ -143,4 +149,5 @@ for(i in shapefiles){
           idx=idx+1
 }
 cat(toJSON(flist))
+
 

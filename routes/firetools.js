@@ -4,7 +4,7 @@ var router = express.Router();
 var multer = require('multer');
 var db = require("../db");
 var path = require('path');
-var unzip = require('unzip');
+var unzip = require('node-unzip-2');
 var archiver = require('archiver');
 var fs = require('fs');
 const sgMail = require('@sendgrid/mail');
@@ -149,6 +149,11 @@ router.get('/list_dp',async (req,res,next) =>{
 router.get('/list_an',async (req,res,next) =>{
   const  pack_list = await db.query('select analysis.* from analysis left join users on analysis.user_id = users.user_id where analysis.user_id = $1 order by created_at desc',[req.session.user_id]);
   res.render('list_an',{pl: pack_list.rows,title:'FireTools Analyses'});
+});
+
+router.get('/list_sched',async (req,res,next) =>{
+  const  pack_list = await db.query('select * from schedule order by created_at desc limit 10');
+  res.render('list_sched',{pl: pack_list.rows,title:'FireTools Scheduled Analyses'});
 });
 
 
@@ -369,7 +374,7 @@ exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+em
   });
 
   // When analysis complete, flag  database, send alert email
-  res.redirect('list_an');
+  res.redirect('/firetools/list_an');
 
 
 })
@@ -585,6 +590,17 @@ router.get('/dl_analysis/:uuid', async(req, res, next) =>{
     return;
   };
   res.download('output/' + req.params.uuid + ".zip");
+});
+
+router.get('/dl_sched/:id', async(req, res, next) =>{
+  const dl_query = await db.query('select * from schedule where id = $1;',[req.params.id]);
+  if(dl_query.rowCount!=1){
+    res.render('unauth',{title:'FireTools',message:'This analysis pack does not exist.'});
+    return;
+  };
+  const {rows} = await db.query('select * from schedule where id = $1;',[req.params.id]);
+  const od = rows[0].output_dir;
+  res.download('output/' + od);
 });
 
 // Delete analysis

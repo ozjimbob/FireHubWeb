@@ -26,7 +26,7 @@ print(tokill)
 
 if(length(tokill) > 0){
 for(i in tokill){
-  if(i %in% c("airrater-01","tiles","NSWFireHub","firehub-web","heatwave","othertools")){
+  if(i %in% c("airrater-01","tiles","NSWFireHub","firehub-web","heatwave","othertools","BMTN", "GSYD", "HCCO" ,"NTHC", "NTHI", "STHC", "STHR" ,"WEST")){
        next
   }
     dropnames = names(droplets())
@@ -34,7 +34,7 @@ for(i in tokill){
       print("Existing server for this analysis found - must be orphan. Deleting")
       id = which(dropnames == i)[1]
       to_delete = droplets()[[id]]
-      if(to_delete$name %in% c("airrater-01","tiles","NSWFireHub","firehub-web","heatwave","othertools")){next}
+      if(to_delete$name %in% c("airrater-01","tiles","NSWFireHub","firehub-web","heatwave","othertools","BMTN", "GSYD", "HCCO" ,"NTHC", "NTHI", "STHC", "STHR" ,"WEST")){next}
       try({droplet_delete(to_delete)})
       Sys.sleep(15)
     }
