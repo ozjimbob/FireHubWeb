@@ -168,7 +168,16 @@ router.post('/define_analysis',async (req,res,next) =>{
   res.render('define_analysis',{title:'FireTools',pack_data:pack_data.rows[0]});
 });
 
-
+router.post('/define_analysis_fesm',async (req,res,next) =>{
+  this_dp = req.body.datapack_id;
+  const pack_data = await db.query('select datapacks.* from datapacks where datapack_id = $1',[this_dp]);
+  if(pack_data.rowCount!=1){
+    res.render('unauth',{title:'FireTools',message:'You are unauthorized to define an analysis based on this datapack.'});
+    return;
+  };
+  res.locals.client_pack = JSON.stringify(pack_data.rows[0]);
+  res.render('define_analysis_fesm',{title:'FireTools',pack_data:pack_data.rows[0]});
+});
 
 // View analysis
 
@@ -581,6 +590,8 @@ exec('ssh grant@processing.airrater.org /pvol/R/aus-heat-forecast/mail_ft.r '+em
 
 
 });
+
+
 
 // Download analysis pack zip
 router.get('/dl_analysis/:uuid', async(req, res, next) =>{

@@ -37,6 +37,9 @@ block content
                       form(action="define_analysis",method="post")
                         input(type="hidden",name="datapack_id",value=val.datapack_id)
                         input.btn.btn-success(type="submit",value="Launch Analysis")
+                      form(action="define_analysis_fesm",method="post")
+                        input(type="hidden",name="datapack_id",value=val.datapack_id)
+                        input.btn.btn-success(type="submit",value="Launch Severity Analysis")
                     div.col-sm-4
                       button.btn-danger.btn(type="button",data-toggle="modal",data-target="#myModal", data-uuid=val.datapack_id, data-url="/firetools/del_dp/") Delete Datapack
                   div.collapse(id=val.datapack_id)
