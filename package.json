@@ -1,6 +1,6 @@
 {
   "name": "FireHubWeb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -8,6 +8,7 @@
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "archiver": "^3.0.0",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "cookie-parser": "~1.4.4",
@@ -28,8 +29,5 @@
     "unzip": "^0.1.11",
     "unzip2": "^0.2.5",
     "uuid": "^3.3.2"
-  },
-  "devDependencies": {
-    "bcrypt": "^3.0.0"
   }
 }
