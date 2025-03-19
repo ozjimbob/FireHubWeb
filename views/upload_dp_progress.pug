@@ -8,7 +8,7 @@ block content
       .col-lg-10
         p #[em DataPacks] provide the set of GIS datafiles required for a FireTools analysis, and are modelled after the set of fires required to run a traditional ArcGIS based analysis.  Each DataPack should be a .ZIP file containing geodatabases for Assets, Corporate, Fire and Vegetation layers.
         p Please provide details of your DataPack below and select the file to upload.
-        form(method='POST', enctype="multipart/form-data",action = 'post_upload')
+        form.upload_form(method='POST', enctype="multipart/form-data")
           div.form-group
             label(for='name') DataPack Name:
             input#name.form-control(type='text',name='name')
@@ -24,4 +24,9 @@ block content
           div.form-group
             label(for='file') Upload file:
             input#file(type='file',name='file')
-          button.btn.btn-primary(type='submit') Submit
+          button.btn.btn-primary(type='button', onclick='uploadFile()') Submit
+          progress#progressBar(value='0', max='100', style='width:300px;')
+          h3#status
+          p#loaded_n_total
+  script(type="application/javascript",src="/javascripts/upl.js")
+
