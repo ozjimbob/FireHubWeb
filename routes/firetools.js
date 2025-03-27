@@ -124,7 +124,7 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
   // Extract zip contents to directory, remove zip file
   fs.renameSync(sqlpass.dp_filepath,sqlpass.dp_filepath + ".zip");
   fs.createReadStream(sqlpass.dp_filepath + ".zip").pipe(unzip.Extract({ path: sqlpass.dp_filepath }));
-  fs.unlinkSync(sqlpass.dp_filepath + ".zip");
+  
   
   res.render('upload_done',{o_filename:sqlpass.dp_filename, o_size:sqlpass.dp_size,title:'FireTools'});
 
@@ -133,7 +133,7 @@ router.post('/post_upload',dpUpload, async (req,res,next) =>{
  var contents = stdout;
 const {rows} = await db.query('insert into datapacks (datapack_id,user_id,name,description,data_year,size,private,file_path,contents) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);',
     [sqlpass.dp_filename,sqlpass.this_user_id,sqlpass.dp_name,sqlpass.dp_description,sqlpass.dp_datayear,sqlpass.dp_size,sqlpass.dp_private,sqlpass.dp_filepath,stdout]);
-
+    fs.unlinkSync(sqlpass.dp_filepath + ".zip");
   });
 
   };
