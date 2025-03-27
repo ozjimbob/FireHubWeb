@@ -89,6 +89,8 @@ print("Uploading Files")
 droplet_upload(d1,input_folder,"/root/inputs/")
 droplet_ssh(d1,"mkdir /root/config")
 droplet_upload(d1,config_file,"/root/config/config_sched.r")
+
+
 droplet_upload(d1,"/root/FireHubWeb/R/global_config.r","/root/config/global_config.r")
 
 droplet_upload(d1,"/root/FireHubWeb/R/grid.tif","/root/config/grid.tif")

@@ -97,14 +97,23 @@ while(connected==FALSE){
 # Copy files
 print("Uploading Files")
 
-droplet_upload(d1,input_folder,"~/inputs")
+#droplet_upload(d1,input_folder,"~/inputs")
+droplet_upload(d1,input_folder,"/root/inputs/")
 droplet_ssh(d1,"mkdir config")
-droplet_upload(d1,config_file,"~/config/config_linux.r")
-droplet_upload(d1,"R/global_config.r","~/config/global_config.r")
 
-droplet_upload(d1,"R/grid.tif","~/config/grid.tif")
+#droplet_upload(d1,config_file,"~/config/config_linux.r")
+droplet_upload(d1,config_file,"/root/config/config_linux.r")
 
-droplet_upload(d1,"R/grid.tif.aux.xml","~/config/grid.tif.aux.xml")
+
+#droplet_upload(d1,"R/global_config.r","~/config/global_config.r")
+droplet_upload(d1,"/root/FireHubWeb/R/global_config.r","/root/config/global_config.r")
+
+
+#droplet_upload(d1,"R/grid.tif","~/config/grid.tif")
+droplet_upload(d1,"/root/FireHubWeb/R/grid.tif","/root/config/grid.tif")
+
+droplet_upload(d1,"/root/FireHubWeb/R/grid.tif.aux.xml","/root/config/grid.tif.aux.xml")
+#droplet_upload(d1,"R/grid.tif.aux.xml","~/config/grid.tif.aux.xml")
 
 # Launch analysis
 
@@ -127,7 +136,7 @@ dtest <- try({
         #cmd = paste0("scp -r root@",droplet_id(as.droplet(d1)),":/root/FireTools2R/output ",output_folder)
         #a=system(cmd,intern=TRUE)
         #print(a)
-        droplet_download(d1,"FireTools2R/output/",output_folder,verbose=TRUE)
+        droplet_download(d1,"/root/FireTools2R/output/",output_folder,verbose=TRUE)
 
 })
 
